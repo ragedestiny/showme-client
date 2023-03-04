@@ -34,7 +34,7 @@ function Login() {
     // redirect to My Page
     setTimeout(() => {
       navigate("/MyPage");
-    }, 300);
+    }, 1000);
   }
 
   useEffect(() => {
