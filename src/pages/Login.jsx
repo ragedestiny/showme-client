@@ -34,7 +34,7 @@ function Login() {
     // redirect to My Page
     setTimeout(() => {
       navigate("/MyPage");
-    }, 1000);
+    }, 700);
   }
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function Login() {
         theme: "outline",
         size: "large",
       });
-    }, 700);
+    }, 300);
   }, []);
 
   // login modal with React and google identity service
