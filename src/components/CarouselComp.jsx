@@ -17,7 +17,7 @@ function CarouselComp(props) {
               />
               <Carousel.Caption>
                 <h4>{entry.tell}</h4>
-                <p className="subtext">{entry.title}</p>
+                <p className="subtext">Vs.</p>
                 <h3>{entry.show}</h3>
               </Carousel.Caption>
             </Carousel.Item>

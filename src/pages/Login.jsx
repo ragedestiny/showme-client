@@ -49,7 +49,7 @@ function Login() {
         theme: "outline",
         size: "large",
       });
-    }, 300);
+    }, 700);
   }, []);
 
   // login modal with React and google identity service
