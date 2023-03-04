@@ -1,0 +1,251 @@
+html {
+  height: 100%;
+}
+
+body {
+  font-family: "Josefin Sans", sans-serif;
+  font-style: italic;
+  font-weight: 300 !important;
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100%;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: url(https://img.freepik.com/free-vector/background-seamless-pattern-vector-with-cute-memphis_53876-105506.jpg?w=1380&t=st=1675105213~exp=1675105813~hmac=726bc720dc4fe74b49234cbbdd4fc13cc4c94f90896b67179c24de96ae7edabd);
+  opacity: 0.9;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Home page */
+.contenthome {
+  min-height: 79vh;
+}
+
+/* carousel styles */
+.carousel {
+  width: 80%;
+  justify-content: center;
+  margin: 5% auto 0;
+}
+
+.carousel-image {
+  width: 80%;
+  height: 70vh;
+  object-fit: cover;
+  opacity: 100%;
+}
+
+.carousel-caption {
+  color: rgb(38, 13, 75) !important;
+  font-style: oblique;
+  font-weight: 900;
+}
+
+.subtext {
+  font-weight: 400;
+}
+
+.contentlogin {
+  min-height: 88vh;
+}
+
+/* Login Modal styles */
+.modal-header {
+  color: rgb(4, 0, 255);
+}
+#signInDiv {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+/* mypage styles */
+.contentmypage {
+  min-height: 87.5vh;
+}
+.content {
+  min-height: 84vh;
+}
+
+/* new sentence form styles */
+.formContainer {
+  padding-bottom: 1%;
+  border-style: ridge;
+  border-radius: 1rem;
+}
+
+.form-text {
+  font-size: large !important;
+}
+
+.form-label {
+  font-size: x-large;
+}
+
+.submitSentence {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* user sentences styles */
+.list-group {
+  min-height: 57vh;
+}
+
+.list-group-item {
+  background-color: rgb(243, 236, 242) !important;
+}
+
+/* Sentence edit modal styles */
+.modal-body {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 95%;
+}
+
+/* pagination styles */
+.pages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* footer styles */
+.site-footer {
+  display: block;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  margin-top: auto;
+  background-color: #e3f2fd;
+  font-weight: 400;
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* About page styles */
+.about {
+  min-height: 87.5vh;
+}
+
+/* Mobile phone styles */
+@media (max-width: 480px) and (orientation: portrait) {
+  .contenthome {
+    min-height: 79vh;
+  }
+  .contentmypage {
+    min-height: 79vh;
+  }
+  .list-group-item {
+    font-size: medium !important;
+  }
+
+  .carousel {
+    width: auto;
+  }
+  .carousel-image {
+    height: 81vh;
+  }
+
+  .about {
+    font-size: medium !important;
+  }
+}
+
+/* Tablet styles */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .contenthome {
+    min-height: 79vh;
+  }
+  .carousel {
+    width: auto;
+    height: 85vh;
+  }
+  .carousel-image {
+    height: 85vh;
+  }
+
+  .contentmypage {
+    min-height: 89vh;
+  }
+  .list-group {
+    min-height: 70vh;
+  }
+  .list-group-item {
+    min-height: 8.5vh;
+    font-size: x-large;
+  }
+  .form-text {
+    font-size: x-large !important;
+  }
+  .form-label {
+    font-size: xx-large;
+  }
+
+  .about {
+    min-height: 91.5vh;
+    font-size: xx-large;
+  }
+  .joinbutton {
+    min-width: 13rem;
+    min-height: 3rem;
+    font-size: x-large !important;
+  }
+}
+@media (max-width: 1366px) and (orientation: landscape) {
+  .contenthome {
+    min-height: 79vh;
+  }
+  .carousel {
+    width: auto;
+    height: 79.5vh;
+  }
+  .carousel-image {
+    height: 78vh;
+  }
+
+  .contentmypage {
+    min-height: 88.5vh;
+  }
+  .list-group {
+    min-height: 61vh;
+  }
+  .list-group-item {
+    min-height: 7.4vh;
+    font-size: large;
+  }
+  .form-text {
+    font-size: large !important;
+  }
+  .form-label {
+    font-size: x-large;
+  }
+
+  .about {
+    min-height: 88.5vh;
+    font-size: xx-large;
+  }
+  .joinbutton {
+    min-width: 13rem;
+    min-height: 3rem;
+    font-size: x-large !important;
+  }
+}
