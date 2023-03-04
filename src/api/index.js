@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/MyPage";
-const loginUrl = "http://localhost:5000/Login";
+const url = "https://energetic-kit-ox.cyclic.app/MyPage";
+const loginUrl = "https://energetic-kit-ox.cyclic.app/Login";
 
 // retrieve tell sentences
 export const fetchTellSentences = () => axios.get(loginUrl);
