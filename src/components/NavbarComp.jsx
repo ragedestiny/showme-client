@@ -47,7 +47,7 @@ function NavbarComp() {
             </Navbar.Brand>
             <Nav className="ms-auto">
               <Nav.Link as={Link} to={"/MyPage"}>
-                My Page
+                {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
               </Nav.Link>
               <Nav.Link
                 as={Link}

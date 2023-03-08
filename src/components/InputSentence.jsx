@@ -66,9 +66,7 @@ function InputSentence(props) {
     <Container className="formContainer">
       <Form>
         <Form.Group className="mb-3" controlId="currentsentence">
-          <Form.Text>
-            Welcome {user.firstName}, Day {day}:
-          </Form.Text>
+          <Form.Text>Day {day}</Form.Text>
           <br></br>
           <Form.Label>
             {sentence ?? props.sentences[props.count]?.tell}

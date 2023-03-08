@@ -6,6 +6,7 @@ import jwtDecode from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../actions/sentences";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 function Login() {
   // dispatch for react redux
@@ -16,22 +17,28 @@ function Login() {
 
   // state to show login modal
   const [show, setShow] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // handle closing the modal
   const handleClose = () => setShow(false);
 
   // callback when connecting to google identity services
   function handleCallbackResponse(response) {
+    // load spinner
+    setLoading(true);
+
     // grab credential from jwt token
     const userObject = jwtDecode(response.credential);
 
     // send credential to backend to create or login user
     dispatch(fetchUser(userObject)).then(() => {
+      // auto close login modal
+      setShow(false);
+      // hide loading spinner
+      setLoading(false);
+
       navigate("/MyPage");
     });
-
-    // auto close login modal
-    setShow(false);
   }
 
   useEffect(() => {
@@ -58,7 +65,13 @@ function Login() {
         <Modal.Header closeButton>
           <Modal.Title>Sign in with Google</Modal.Title>
         </Modal.Header>
-        <div id="signInDiv"></div>
+        {loading ? (
+          <div className="spinner">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <div id="signInDiv"></div>
+        )}
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close

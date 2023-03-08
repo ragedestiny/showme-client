@@ -68,6 +68,11 @@ body {
   text-align: center;
   justify-content: center;
 }
+.spinner {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
 
 /* mypage styles */
 .contentmypage {
