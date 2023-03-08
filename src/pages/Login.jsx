@@ -26,15 +26,12 @@ function Login() {
     const userObject = jwtDecode(response.credential);
 
     // send credential to backend to create or login user
-    dispatch(fetchUser(userObject));
+    dispatch(fetchUser(userObject)).then(() => {
+      navigate("/MyPage");
+    });
 
     // auto close login modal
     setShow(false);
-
-    // redirect to My Page
-    setTimeout(() => {
-      navigate("/MyPage");
-    }, 700);
   }
 
   useEffect(() => {
@@ -49,7 +46,7 @@ function Login() {
         theme: "outline",
         size: "large",
       });
-    }, 700);
+    }, 300);
   }, []);
 
   // login modal with React and google identity service

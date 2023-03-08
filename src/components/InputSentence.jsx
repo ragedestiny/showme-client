@@ -24,6 +24,9 @@ function InputSentence(props) {
     // prevents the page from refreshing
     event.preventDefault();
 
+    // if user didn't enter anything, disregard submit
+    if (newSentence === "") return;
+
     // create new show sentence
     const newEntry = {
       title: "day" + day,
