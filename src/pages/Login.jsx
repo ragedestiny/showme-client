@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Home from "./Home";
 import jwtDecode from "jwt-decode";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchUser } from "../actions/sentences";
 import { useNavigate } from "react-router-dom";
 
