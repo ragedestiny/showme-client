@@ -11,7 +11,9 @@ function InputSentence(props) {
 
   // set states for current tellsentence/ user sentence / day
   const [day, setDay] = useState(props.count + 1);
-  const [sentence, setSentences] = useState(props.sentences[props.count]?.tell);
+  const [sentence, setSentences] = useState(
+    props.sentences[props.count]?.tell || "Come Back Later For More Sentences! "
+  );
   const [newSentence, setNewSentences] = useState("");
 
   // for react redux
