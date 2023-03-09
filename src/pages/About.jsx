@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 // About page
 const About = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="contentmypage">
       <div className="container-fluid bg-dark rounded-3 text-white p-5 about">
@@ -15,7 +18,10 @@ const About = () => {
             show instead! Paint a picture in the readers' minds with mere words.
             Start today!{" "}
           </p>
-          <a href="/Login" className="btn btn-primary joinbutton">
+          <a
+            onClick={() => navigate("/MyPage")}
+            className="btn btn-primary joinbutton"
+          >
             Join Us!
           </a>
         </div>
