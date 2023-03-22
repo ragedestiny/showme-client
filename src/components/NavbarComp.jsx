@@ -20,13 +20,29 @@ function NavbarComp() {
 
   const dispatch = useDispatch();
 
+  function navLogin() {
+    console.log("test");
+    setTimeout(() => {
+      navigate("/");
+    }, 200);
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
+  }
+
   // on click, sign out user when there is a user signed in
-  function signout() {
+  function signInorOut() {
     // sign out user if there there is one signed in
     if (user.length !== 0) {
-      dispatch(logoutUser());
-      // navigate to homepage once logged out
-      navigate("/");
+      dispatch(logoutUser()).then(() =>
+        setTimeout(() => {
+          // navigate to homepage once logged out
+          navigate("/");
+        }, 300)
+      );
+    } else if (user.length === 0) {
+      // navigate to login page if no user currently login
+      navLogin();
     }
   }
 
@@ -51,8 +67,8 @@ function NavbarComp() {
               </Nav.Link>
               <Nav.Link
                 as={Link}
-                to={user.length === 0 ? "/login" : "/"}
-                onClick={signout}
+                // to={user.length === 0 ? "/login" : "/"}
+                onClick={signInorOut}
               >
                 {user.length === 0 ? "Login" : "Logout"}
               </Nav.Link>
