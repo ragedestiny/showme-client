@@ -16,7 +16,7 @@ function EditModal(props) {
   const [show, setShow] = useState(false);
 
   // State for newly edited sentence
-  const [newSentence, setNewSentence] = useState("");
+  const [newSentence, setNewSentence] = useState("0");
 
   // handle showing and hiding the edit modal
   const handleClose = () => setShow(false);
@@ -25,7 +25,7 @@ function EditModal(props) {
   // update the edited sentence
   function updateSentence() {
     // if nothing is entered, just return nothing
-    if (newSentence === "") return;
+    if (newSentence === "" || newSentence === "0") return;
 
     // update the user sentences once the edited sentence is submitted
     let sentenceInfo;
@@ -51,7 +51,7 @@ function EditModal(props) {
     dispatch(editSentences([user.id, sentenceInfo, updatedSentences]));
 
     // clear out the modal textbox
-    setNewSentence("");
+    setNewSentence("0");
   }
 
   // React bootstrap edit modal for editing the sentences
@@ -73,8 +73,8 @@ function EditModal(props) {
             autoFocus
             as="textarea"
             className="form-control"
-            placeholder="Update your sentence here!"
-            value={newSentence}
+            // placeholder="Update your sentence"
+            value={newSentence === "0" ? props.sentence.show : newSentence}
             onChange={(e) => setNewSentence(e.target.value)}
           ></Modal.Body>
           <Modal.Footer>
