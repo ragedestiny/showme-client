@@ -67,3 +67,14 @@ export const logoutUser = () => async (dispatch) => {
     console.log(error);
   }
 };
+
+// fetch Sentences Awaiting Approval
+export const fetchApprovalSentences = () => async (dispatch) => {
+  try {
+    const { data } = await api.fetchApprovalSentences();
+
+    dispatch({ type: "FETCH_APPROVAL", payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
