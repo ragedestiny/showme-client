@@ -37,6 +37,9 @@ function EditModal(props) {
           show: newSentence,
           // new date since it was just edited
           createdAt: new Date(),
+          // reset - teacher needs to recheck sentence again
+          approved: false,
+          toRedo: false,
         };
         return sentenceInfo;
       }

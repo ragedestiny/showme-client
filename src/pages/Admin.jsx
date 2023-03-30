@@ -60,12 +60,10 @@ function Admin() {
                     </MDBTableHead>
                     <MDBTableBody>
                       {sentencesAwaitingApproval
-                        .sort((a, b) => {
-                          console.log(b.createdAt, a.createdAt, new Date());
-                          return (
+                        .sort(
+                          (a, b) =>
                             Date.parse(b.createdAt) - Date.parse(a.createdAt)
-                          );
-                        })
+                        )
                         .map((sentence) => {
                           return (
                             <tr className="fw-normal">

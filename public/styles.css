@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  font-family: "Josefin Sans", sans-serif;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
   font-style: italic;
   font-weight: 300 !important;
   display: flex;
