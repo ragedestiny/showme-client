@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Show ME
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Show ME is used as a tool to help students write vivid and exciting sentences. Each day of the challenge, students will be given a different simple tell sentence and the goal is for the student to formulate and come up a more descriptive sentence. Show ME will keep track of the submitted sentences and students can edit them at any time. This is the frontend client.
 
-## Available Scripts
+> Live website [_here_](https://show-me-not-tell.netlify.app/).
+>
+> Backend Server [_here_](https://github.com/ragedestiny/showme-backend).
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- [General Info](#general-information)
+- [Technologies Used](#technologies-used)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Setup](#setup)
+- [Project Status](#project-status)
+- [Room for Improvement](#room-for-improvement)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## General Information
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- As a tutor, my goal is to help students achieve greater heights in their English class. One way to do this is to write better and more descriptively rather than simple and plainly. Before creating this web app, my students would have to keep track of their sentences on a standard paper notebook. The paper notebook would eventually get lost and it was hard to keep track of what their sentences were. In order to make this exercise more steamline and efficient, creating a web app was the way to go.
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- bootstrap - version 5.2
+- react - version 18.2.0
+- react-redux - version 8.0.5
+- redux - 4.2.1
 
-### `npm run build`
+## Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Login with school google account (every student has a school Google account)
+- Personal page where students can create and edit show sentences
+- Admin can approve or reject show sentences
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Screenshots
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Example screenshot](./img/screenshot.png)
 
-### `npm run eject`
+<!-- If you have screenshots you'd like to share, include them here. -->
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Setup
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`cd to correct folder`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+`npm install`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+`npm start`
 
-## Learn More
+## Project Status
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Project is: _in progress_
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Room for Improvement
 
-### Code Splitting
+To do:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Collection page displaying sample approved student sentences
