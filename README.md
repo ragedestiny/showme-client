@@ -1,7 +1,7 @@
 # Show ME
 > Show ME is used as a tool to help students write vivid and exciting sentences. Each day of the challenge, students will be given a different simple tell sentence and the goal is for the student to formulate and come up a more descriptive sentence. Show ME will keep track of the submitted sentences and students can edit them at any time. This is the frontend client.
 
-> Live website [_here_](https://https://show-me-not-tell.netlify.app/).
+> Live website [_here_](https://show-me-not-tell.netlify.app/).
 > 
 > Backend Server [_here_](https://github.com/ragedestiny/showme-backend).
 
@@ -42,7 +42,7 @@
 
 `npm install`
 
-'npm start'
+`npm start`
 
 
 ## Project Status
