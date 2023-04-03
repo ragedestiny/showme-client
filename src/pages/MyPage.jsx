@@ -144,7 +144,7 @@ function MyPage() {
                       sentence.approved === true
                         ? "#F1FEEC"
                         : sentence.toRedo === true
-                        ? "#FFFFBE"
+                        ? "#ffe1a8"
                         : "rgb(243, 236, 242)",
                   }}
                 >
