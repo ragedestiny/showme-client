@@ -44,16 +44,16 @@ function Admin() {
     const index = +event.target.closest(".approve-redo")?.getAttribute("value");
     setActive(!isActive);
     dispatch(
-      approveSentence(["approve", sentencesAwaitingApproval[index]])
+      approveSentence(["approve", user, sentencesAwaitingApproval[index]])
     ).then(() => setActive(false));
   }
 
   function handleRedo(event) {
     const index = +event.target.closest(".approve-redo")?.getAttribute("value");
     setActive(!isActive);
-    dispatch(redoSentence(["redo", sentencesAwaitingApproval[index]])).then(
-      () => setActive(false)
-    );
+    dispatch(
+      redoSentence(["redo", user, sentencesAwaitingApproval[index]])
+    ).then(() => setActive(false));
   }
 
   if (user.id === process.env.REACT_APP_ADMIN_ID) {
