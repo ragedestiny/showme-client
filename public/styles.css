@@ -109,7 +109,7 @@ body {
 }
 
 .list-group-item {
-  background-color: rgb(243, 236, 242) !important;
+  background-color: rgb(243, 236, 242);
 }
 
 /* Sentence edit modal styles */

@@ -25,9 +25,9 @@ export const getUserSentences = (userInfo) => async (dispatch) => {
 };
 
 // update edited sentences
-export const editSentences = (sentences) => async (dispatch) => {
+export const editSentences = (sentence) => async (dispatch) => {
   try {
-    const { data } = await api.editUserSentences(sentences);
+    const { data } = await api.editUserSentences(sentence);
 
     dispatch({ type: "EDIT", payload: data });
   } catch (error) {
@@ -42,7 +42,7 @@ export const createSentence = (sentence) => async (dispatch) => {
 
     dispatch({ type: "CREATE", payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 
@@ -53,7 +53,7 @@ export const fetchUser = (userInfo) => async (dispatch) => {
 
     dispatch({ type: "FIND_USER", payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 
@@ -64,7 +64,7 @@ export const logoutUser = () => async (dispatch) => {
 
     dispatch({ type: "LOGOUT", payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 
@@ -75,6 +75,28 @@ export const fetchApprovalSentences = () => async (dispatch) => {
 
     dispatch({ type: "FETCH_APPROVAL", payload: data });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+  }
+};
+
+// post request when sentence is approved, update database
+export const approveSentence = (sentence) => async (dispatch) => {
+  try {
+    const { data } = await api.approveSentence(sentence);
+
+    dispatch({ type: "APPROVE", payload: data });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// post request when sentence is rejected and need redo, update database
+export const redoSentence = (sentence) => async (dispatch) => {
+  try {
+    const { data } = await api.redoSentence(sentence);
+
+    dispatch({ type: "REDO", payload: data });
+  } catch (error) {
+    console.log(error.message);
   }
 };

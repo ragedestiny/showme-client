@@ -57,6 +57,7 @@ function MyPage() {
   function updateSentences(updatedSentences) {
     // update the user sentences for state
     setSentences([...updatedSentences]);
+    user.sentences = updatedSentences;
     // find out the new total pages
     const totalPages = Math.ceil(updatedSentences.length / itemsPerPage);
     // set total amount of pages
@@ -115,6 +116,8 @@ function MyPage() {
         : sentences.length % itemsPerPage);
     const bottomitem = Math.max(topitem - itemsPerPage, 0);
 
+    // console.log(user.sentences);
+
     // Display MyPage
     return (
       <div className="contentmypage">
@@ -136,6 +139,14 @@ function MyPage() {
                   value={index}
                   onMouseOver={toggleEdit}
                   onMouseOut={toggleEdit}
+                  style={{
+                    backgroundColor:
+                      sentence.approved === true
+                        ? "#F1FEEC"
+                        : sentence.toRedo === true
+                        ? "#FFFFBE"
+                        : "rgb(243, 236, 242)",
+                  }}
                 >
                   <div className="ms-2 me-auto">
                     <div className="fw-bold wordwrap">{sentence.show}</div>

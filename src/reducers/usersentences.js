@@ -5,8 +5,15 @@ export default (usersentences = [], action) => {
       return action.payload;
     case "CREATE":
       return [...usersentences, action.payload];
-    case "EDIT":
-      return action.payload;
+    case "EDIT": {
+      const sentences = usersentences.map((sentence, i) => {
+        if (sentence.title === action.payload.title) {
+          return { ...action.payload };
+        }
+        return sentence;
+      });
+      return sentences;
+    }
     default:
       return usersentences;
   }
