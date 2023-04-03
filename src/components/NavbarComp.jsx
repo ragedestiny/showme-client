@@ -66,7 +66,7 @@ function NavbarComp() {
                 as={Link}
                 to={"/Admin"}
                 hidden={
-                  user.id === process.env.REACT_APP_ADMIN_ID ? false : true
+                  user.id !== process.env.REACT_APP_ADMIN_ID ? true : false
                 }
               >
                 Admin
