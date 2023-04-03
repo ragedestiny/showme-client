@@ -11,7 +11,6 @@
 * [Features](#features)
 * [Screenshots](#screenshots)
 * [Setup](#setup)
-* [Usage](#usage)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 
@@ -37,11 +36,14 @@
 <!-- If you have screenshots you'd like to share, include them here. -->
 
 
-## Setup / Usage
+## Setup
 
-`cd to root folder`
+`cd to correct folder`
+
 `npm install`
+
 'npm start'
+
 
 ## Project Status
 Project is: _in progress_
