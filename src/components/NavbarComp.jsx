@@ -7,6 +7,7 @@ import About from "../pages/About";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import MyPage from "../pages/MyPage";
+import Admin from "../pages/Admin";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../actions/sentences";
@@ -21,7 +22,6 @@ function NavbarComp() {
   const dispatch = useDispatch();
 
   function navLogin() {
-    console.log("test");
     setTimeout(() => {
       navigate("/");
     }, 200);
@@ -62,6 +62,15 @@ function NavbarComp() {
               />
             </Navbar.Brand>
             <Nav className="ms-auto">
+              <Nav.Link
+                as={Link}
+                to={"/Admin"}
+                hidden={
+                  user.id === process.env.REACT_APP_ADMIN_ID ? false : true
+                }
+              >
+                Admin
+              </Nav.Link>
               <Nav.Link as={Link} to={"/MyPage"}>
                 {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
               </Nav.Link>
@@ -81,6 +90,7 @@ function NavbarComp() {
       </div>
       <div>
         <Routes>
+          <Route path="/admin" element={<Admin />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/MyPage" element={<MyPage />} />

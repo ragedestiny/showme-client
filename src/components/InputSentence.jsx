@@ -37,7 +37,7 @@ function InputSentence(props) {
       GID: user.id,
     };
 
-    // check to see if there are most tell sentences after this one
+    // check to see if there are more tell sentences after this one
     const totalcount = props.sentences.length;
 
     // verify sentence count

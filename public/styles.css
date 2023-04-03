@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  font-family: "Josefin Sans", sans-serif;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
   font-style: italic;
   font-weight: 300 !important;
   display: flex;
@@ -109,7 +109,7 @@ body {
 }
 
 .list-group-item {
-  background-color: rgb(243, 236, 242) !important;
+  background-color: rgb(243, 236, 242);
 }
 
 /* Sentence edit modal styles */
@@ -253,4 +253,8 @@ body {
     min-height: 3rem;
     font-size: x-large !important;
   }
+}
+
+.approvallist {
+  max-width: 100% !important;
 }
