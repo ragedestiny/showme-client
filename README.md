@@ -35,9 +35,9 @@
 
 ## Screenshots
 
-![Example screenshot](./img/screenshot.png)
+![Home Page](./img/homepage.PNG)
 
-<!-- If you have screenshots you'd like to share, include them here. -->
+![My Page](./img/MyPage.PNG)
 
 ## Setup
 
