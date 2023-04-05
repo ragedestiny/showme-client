@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Badge from "react-bootstrap/Badge";
 import ListGroup from "react-bootstrap/ListGroup";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import InputSentence from "../components/InputSentence";
 import EditModal from "../components/EditModal";
 import Pagination from "react-bootstrap/Pagination";
@@ -148,10 +150,32 @@ function MyPage() {
                         : "rgb(243, 236, 242)",
                   }}
                 >
-                  <div className="ms-2 me-auto">
-                    <div className="fw-bold wordwrap">{sentence.show}</div>
-                    {tellSentences[index]?.tell}
-                  </div>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={
+                      <Tooltip id="button-tooltip">
+                        {sentence.approved === true
+                          ? "Approved"
+                          : sentence.toRedo === true
+                          ? "Need To Redo"
+                          : "Pending Approval"}
+                      </Tooltip>
+                    }
+                  >
+                    {({ ref, ...triggerHandler }) => (
+                      <div className="ms-2 me-auto">
+                        <div
+                          className="fw-bold wordwrap"
+                          {...triggerHandler}
+                          ref={ref}
+                        >
+                          {sentence.show}
+                        </div>
+                        {tellSentences[index]?.tell}
+                      </div>
+                    )}
+                  </OverlayTrigger>
                   <Badge bg="primary" pill>
                     {sentence.title.toUpperCase()}
                   </Badge>

@@ -112,6 +112,13 @@ body {
   background-color: rgb(243, 236, 242);
 }
 
+.tooltip {
+  font-size: 0.1rem !important;
+  font-weight: 200 !important;
+  line-height: 0.5 !important;
+  font-style: italic !important;
+}
+
 /* Sentence edit modal styles */
 .modal-body {
   display: block;

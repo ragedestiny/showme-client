@@ -77,6 +77,7 @@ function EditModal(props) {
             autoFocus
             as="textarea"
             className="form-control"
+            rows={4}
             // placeholder="Update your sentence"
             value={newSentence === "0" ? props.sentence.show : newSentence}
             onChange={(e) => setNewSentence(e.target.value)}
