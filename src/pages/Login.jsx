@@ -53,6 +53,7 @@ function Login() {
         theme: "outline",
         size: "large",
       });
+      google.accounts.id.prompt();
     }, 300);
   }, []);
 
