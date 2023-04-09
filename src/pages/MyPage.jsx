@@ -7,7 +7,7 @@ import InputSentence from "../components/InputSentence";
 import EditModal from "../components/EditModal";
 import Pagination from "react-bootstrap/Pagination";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserSentences } from "../actions/sentences";
+import { getUserSentences } from "../actions/usersentences";
 import { useNavigate } from "react-router-dom";
 
 function MyPage() {
@@ -29,7 +29,7 @@ function MyPage() {
   }
 
   // set user sentences, pagination related States with React
-  const [sentences, setSentences] = useState(user.sentences);
+  const [sentences, setSentences] = useState(user.ownSentences);
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [pagesArray, setPagesArray] = useState([]);
@@ -59,7 +59,6 @@ function MyPage() {
   function updateSentences(updatedSentences) {
     // update the user sentences for state
     setSentences([...updatedSentences]);
-    user.sentences = updatedSentences;
     // find out the new total pages
     const totalPages = Math.ceil(updatedSentences.length / itemsPerPage);
     // set total amount of pages
@@ -97,10 +96,10 @@ function MyPage() {
     dispatch(getUserSentences(user));
 
     // set user sentence start
-    setSentences(user.sentences);
+    setSentences([...user.ownSentences]);
 
     // total amount of pages of user sentences
-    const totalPages = Math.ceil(user.sentences?.length / itemsPerPage);
+    const totalPages = Math.ceil(sentences?.length / itemsPerPage);
 
     // set total page state
     setPages(totalPages);
@@ -109,17 +108,19 @@ function MyPage() {
     amountOfPages(totalPages);
   }, []);
 
-  // if there is a user login, calculate the top and bottom sentences on the active page
-  if (user.length !== 0) {
+  // calculate the displayed sentences according to pagination
+  function topbottom() {
     const topitem =
       (pages - activePage) * itemsPerPage +
       (sentences?.length % itemsPerPage === 0
         ? itemsPerPage
         : sentences.length % itemsPerPage);
     const bottomitem = Math.max(topitem - itemsPerPage, 0);
+    return [topitem, bottomitem];
+  }
 
-    // console.log(user.sentences);
-
+  // if there is a login user, display their own sentences
+  if (Object.keys(user)?.length !== 0) {
     // Display MyPage
     return (
       <div className="contentmypage">
@@ -131,6 +132,7 @@ function MyPage() {
 
         <ListGroup as="ol">
           {[...sentences].reverse().map((sentence, i) => {
+            const [topitem, bottomitem] = topbottom();
             const index = sentences.length - i - 1;
             if (index < topitem && index >= bottomitem) {
               return (
@@ -177,7 +179,7 @@ function MyPage() {
                     )}
                   </OverlayTrigger>
                   <Badge bg="primary" pill>
-                    {sentence.title.toUpperCase()}
+                    {sentence.title?.toUpperCase()}
                   </Badge>
                   <EditModal
                     sentence={sentence}

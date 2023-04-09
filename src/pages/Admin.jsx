@@ -18,44 +18,56 @@ import {
   approveSentence,
   fetchApprovalSentences,
   redoSentence,
-} from "../actions/sentences";
+} from "../actions/approvalsentences";
 import LoadingOverlay from "react-loading-overlay";
 LoadingOverlay.propTypes = undefined;
 
 function Admin() {
+  // grab global state from redux store
   const user = useSelector((state) => state.user);
   const sentencesAwaitingApproval = useSelector(
     (state) => state.approvalsentences
   );
+  // create state for loading spinner
   const [isActive, setActive] = useState(false);
 
+  // dispatch for redux
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   useEffect(() => {
+    // if user is not admin, send back to home page
     if (user.id !== process.env.REACT_APP_ADMIN_ID) {
       navigate("/");
     }
-
+    // retrieve all sentences pending approval
     dispatch(fetchApprovalSentences());
   }, []);
 
   function handleApprove(event) {
+    // find the index of sentence that has been approved
     const index = +event.target.closest(".approve-redo")?.getAttribute("value");
+    // load loading spinner
     setActive(!isActive);
+    // send the approved sentence to backend and update database and redux store
     dispatch(
       approveSentence(["approve", user, sentencesAwaitingApproval[index]])
     ).then(() => setActive(false));
   }
 
   function handleRedo(event) {
+    // find the index of sentence that has been rejected
     const index = +event.target.closest(".approve-redo")?.getAttribute("value");
+    // load loading spinner
     setActive(!isActive);
+    // send the rejected sentence to backend and update database and redux store
     dispatch(
       redoSentence(["redo", user, sentencesAwaitingApproval[index]])
     ).then(() => setActive(false));
   }
 
+  // only render page if login user is admin
   if (user.id === process.env.REACT_APP_ADMIN_ID) {
     return (
       <LoadingOverlay active={isActive} spinner text="Loading...">
@@ -82,72 +94,67 @@ function Admin() {
                         </tr>
                       </MDBTableHead>
                       <MDBTableBody>
-                        {sentencesAwaitingApproval
-                          .sort(
-                            (a, b) =>
-                              Date.parse(b.createdAt) - Date.parse(a.createdAt)
-                          )
-                          .map((sentence, i) => {
-                            return (
-                              <tr
-                                className="fw-normal approve-redo"
-                                value={i}
-                                key={i}
-                              >
-                                <th width="15%">
-                                  {/* <img
+                        {[...sentencesAwaitingApproval].map((sentence, i) => {
+                          return (
+                            <tr
+                              className="fw-normal approve-redo"
+                              value={i}
+                              key={i}
+                            >
+                              <th width="15%">
+                                {/* <img
                             src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
                             alt="avatar"
                             className="shadow-1-strong rounded-circle"
                             style={{ width: "30px", height: "auto" }}
                           /> */}
-                                  <span className="ms-2">
-                                    {sentence.author.firstName +
-                                      " " +
-                                      sentence.author.lastName}
-                                  </span>
-                                </th>
-                                <td className="align-middle" width="55%">
-                                  <h6 className="mb-0">
-                                    <span>{sentence.show}</span>
-                                  </h6>
-                                </td>
-                                <td className="align-middle" width="20%">
-                                  <span>{sentence.tell}</span>
-                                </td>
-                                <td className="align-middle" width="10%">
-                                  <MDBTooltip
-                                    tag="a"
-                                    wrapperProps={{ href: "#!" }}
-                                    title="Approve"
-                                  >
-                                    <MDBIcon
-                                      fas
-                                      icon="check"
-                                      color="success"
-                                      size="lg"
-                                      className="me-3"
-                                      onClick={handleApprove}
-                                    />
-                                  </MDBTooltip>
-                                  <MDBTooltip
-                                    tag="a"
-                                    wrapperProps={{ href: "#!" }}
-                                    title="Redo"
-                                  >
-                                    <MDBIcon
-                                      fas
-                                      icon="redo"
-                                      color="warning"
-                                      size="lg"
-                                      className="me-3"
-                                      onClick={handleRedo}
-                                    />
-                                  </MDBTooltip>
-                                </td>
-                              </tr>
-                            );
-                          })}
+                                <span className="ms-2">
+                                  {sentence.author.firstName +
+                                    " " +
+                                    sentence.author.lastName}
+                                </span>
+                              </th>
+                              <td className="align-middle" width="55%">
+                                <h6 className="mb-0">
+                                  <span>{sentence.show}</span>
+                                </h6>
+                              </td>
+                              <td className="align-middle" width="20%">
+                                <span>{sentence.tell}</span>
+                              </td>
+                              <td className="align-middle" width="10%">
+                                <MDBTooltip
+                                  tag="a"
+                                  wrapperProps={{ href: "#!" }}
+                                  title="Approve"
+                                >
+                                  <MDBIcon
+                                    fas
+                                    icon="check"
+                                    color="success"
+                                    size="lg"
+                                    className="me-3"
+                                    onClick={handleApprove}
+                                  />
+                                </MDBTooltip>
+                                <MDBTooltip
+                                  tag="a"
+                                  wrapperProps={{ href: "#!" }}
+                                  title="Redo"
+                                >
+                                  <MDBIcon
+                                    fas
+                                    icon="redo"
+                                    color="warning"
+                                    size="lg"
+                                    className="me-3"
+                                    onClick={handleRedo}
+                                  />
+                                </MDBTooltip>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </MDBTableBody>
                     </MDBTable>
                   </MDBCardBody>

@@ -4,7 +4,8 @@ import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { editSentences, getUserSentences } from "../actions/sentences";
+import { editSentences } from "../actions/usersentences";
+import { fetchUser } from "../actions/user";
 
 function EditModal(props) {
   // Pull states from global redux store
@@ -48,10 +49,13 @@ function EditModal(props) {
       return sentence;
     });
 
-    // keep track of the updated sentences using React state
     // sending the updated sentences to the backend and update our database
-    dispatch(editSentences([user.id, newSentence, sentenceInfo]));
+    // update store
+    dispatch(editSentences([user.id, newSentence, sentenceInfo])).then(() =>
+      dispatch(fetchUser({ sub: user.id }))
+    );
 
+    // update frontend display
     props.update(updatedSentences);
 
     // clear out the modal textbox

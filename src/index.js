@@ -5,12 +5,11 @@ import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose } from "redux";
-import thunk from "redux-thunk";
+import { configureStore } from "@reduxjs/toolkit";
 import reducers from "./reducers";
 
 // react redux global state in store
-const store = createStore(reducers, compose(applyMiddleware(thunk)));
+const store = configureStore({ reducer: reducers });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

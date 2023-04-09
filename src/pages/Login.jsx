@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Home from "./Home";
 import jwtDecode from "jwt-decode";
 import { useDispatch } from "react-redux";
-import { fetchUser } from "../actions/sentences";
+import { fetchUser } from "../actions/user";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 

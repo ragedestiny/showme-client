@@ -10,7 +10,7 @@ import MyPage from "../pages/MyPage";
 import Admin from "../pages/Admin";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../actions/sentences";
+import { logoutUser } from "../actions/user";
 
 function NavbarComp() {
   // get user from global react redux store

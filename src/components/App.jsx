@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import NavbarComp from "./NavbarComp";
 import Footer from "./Footer";
 import { useDispatch } from "react-redux";
-import { getTellSentences } from "../actions/sentences";
+import { getTellSentences } from "../actions/tellsentences";
 import { BrowserRouter } from "react-router-dom";
 
 function App() {

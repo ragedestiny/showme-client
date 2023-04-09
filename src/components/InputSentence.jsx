@@ -3,11 +3,13 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/esm/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { createSentence } from "../actions/sentences";
+import { createSentence } from "../actions/usersentences";
+import { fetchUser } from "../actions/user";
 
 function InputSentence(props) {
   // Load user from global React redux state if it is loaded already
   const user = useSelector?.((state) => state.user);
+  const userSentences = useSelector((state) => state.usersentences);
 
   // set states for current tellsentence/ user sentence / day
   const [day, setDay] = useState(props.count + 1);
@@ -42,12 +44,13 @@ function InputSentence(props) {
 
     // verify sentence count
     if (day <= totalcount) {
-      // send sentence to backend database
-      dispatch(createSentence(newEntry));
+      // send sentence to backend database, update redux store with responses
+      dispatch(createSentence(newEntry)).then(() =>
+        dispatch(fetchUser({ sub: user.id }))
+      );
 
       // update frontend display
-      user.sentences.push(newEntry);
-      props.updatelist(user.sentences);
+      props.updatelist([...userSentences, newEntry]);
       const newDay = day + 1;
       setDay(newDay);
 
