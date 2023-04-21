@@ -22,14 +22,14 @@ function MyPage() {
   const dispatch = useDispatch();
 
   // If there is no logged in user, redirect to login page
-  if (user.length === 0) {
+  if (Object.keys(user)?.length === 0) {
     setTimeout(() => {
       navigate("/Login");
     }, 300);
   }
 
   // set user sentences, pagination related States with React
-  const [sentences, setSentences] = useState(user.ownSentences);
+  const [sentences, setSentences] = useState(user?.ownSentences);
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [pagesArray, setPagesArray] = useState([]);
@@ -96,7 +96,7 @@ function MyPage() {
     dispatch(getUserSentences(user));
 
     // set user sentence start
-    setSentences([...user.ownSentences]);
+    setSentences(user?.ownSentences);
 
     // total amount of pages of user sentences
     const totalPages = Math.ceil(sentences?.length / itemsPerPage);
