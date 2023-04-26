@@ -15,11 +15,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   background: url(https://img.freepik.com/free-vector/background-seamless-pattern-vector-with-cute-memphis_53876-105506.jpg?w=1380&t=st=1675105213~exp=1675105813~hmac=726bc720dc4fe74b49234cbbdd4fc13cc4c94f90896b67179c24de96ae7edabd);
-  opacity: 0.9;
+  background-repeat: repeat;
+  opacity: 0.95;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
+  background-size: contain;
   top: 0;
   left: 0;
   bottom: 0;
@@ -264,4 +265,49 @@ body {
 
 .approvallist {
   max-width: 100% !important;
+}
+
+/* Styles for collection page */
+.contentcollection {
+  min-height: 87vh;
+}
+
+.dropdown {
+  display: flex;
+  justify-content: right;
+  margin-top: 1%;
+}
+
+#fade-button {
+  margin-right: 2vw;
+}
+
+.MuiCard-root {
+  background: rgb(251, 228, 238);
+  background: radial-gradient(
+    circle,
+    rgba(251, 228, 238, 1) 20%,
+    rgba(236, 255, 255, 1) 77%
+  );
+}
+
+.MuiCard-root:hover {
+  box-shadow: 5px 10px 20px 1px rgba(0, 0, 0, 0.253);
+}
+
+.MuiCardMedia-root {
+  transform: scale(1);
+  transition: transform 0.5s ease;
+}
+
+.MuiCardMedia-root:hover {
+  transform: scale(1.1);
+}
+
+.MuiTypography-caption {
+  font-size: smaller !important;
+}
+
+.MuiTypography-body2 {
+  font-size: small !important;
 }

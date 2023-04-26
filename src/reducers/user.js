@@ -1,5 +1,5 @@
 // user reducer, keep track of user
-export default (user = [], action) => {
+const user = (user = [], action) => {
   switch (action.type) {
     case "FIND_USER":
       return action.payload;
@@ -9,3 +9,5 @@ export default (user = [], action) => {
       return user;
   }
 };
+
+export default user;

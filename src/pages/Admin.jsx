@@ -102,12 +102,6 @@ function Admin() {
                               key={i}
                             >
                               <th width="15%">
-                                {/* <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-5.webp"
-                            alt="avatar"
-                            className="shadow-1-strong rounded-circle"
-                            style={{ width: "30px", height: "auto" }}
-                          /> */}
                                 <span className="ms-2">
                                   {sentence.author.firstName +
                                     " " +

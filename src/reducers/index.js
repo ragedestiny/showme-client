@@ -3,6 +3,7 @@ import tellsentences from "./tellsentences";
 import usersentences from "./usersentences";
 import user from "./user";
 import approvalsentences from "./approvalsentences";
+import approvedsentences from "./approvedsentences";
 
 // combine reducers for react redux
 export default combineReducers({
@@ -10,4 +11,5 @@ export default combineReducers({
   user,
   usersentences,
   approvalsentences,
+  approvedsentences,
 });

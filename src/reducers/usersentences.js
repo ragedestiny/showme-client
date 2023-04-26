@@ -1,5 +1,5 @@
 // user sentences reducer, keeps track of user sentences
-export default (usersentences = [], action) => {
+const usersentences = (usersentences = [], action) => {
   switch (action.type) {
     case "FETCH_ALL":
       return [...action.payload];
@@ -16,3 +16,5 @@ export default (usersentences = [], action) => {
       return usersentences;
   }
 };
+
+export default usersentences;

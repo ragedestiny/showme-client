@@ -12,6 +12,10 @@ const adminUrl =
   process.env.NODE_ENV.trim() === "development"
     ? "http://localhost:5000/Admin"
     : "https://energetic-kit-ox.cyclic.app/Admin";
+const collectionUrl =
+  process.env.NODE_ENV.trim() === "development"
+    ? "http://localhost:5000/Collections"
+    : "https://energetic-kit-ox.cyclic.app/Collections";
 
 // retrieve tell sentences
 export const fetchTellSentences = () => axios.get(loginUrl);
@@ -29,3 +33,6 @@ export const logoutUser = () => axios.post(loginUrl);
 export const fetchApprovalSentences = () => axios.get(adminUrl);
 export const redoSentence = (sentence) => axios.post(adminUrl, sentence);
 export const approveSentence = (sentence) => axios.post(adminUrl, sentence);
+
+// retrieve approved sentences
+export const fetchApprovedSentences = () => axios.get(collectionUrl);

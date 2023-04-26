@@ -9,6 +9,7 @@ import Pagination from "react-bootstrap/Pagination";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserSentences } from "../actions/usersentences";
 import { useNavigate } from "react-router-dom";
+import * as config from "../../src/config";
 
 function MyPage() {
   // get states from global react redux store
@@ -33,7 +34,7 @@ function MyPage() {
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [pagesArray, setPagesArray] = useState([]);
-  const itemsPerPage = 8;
+  const itemsPerPage = config.SentencesPerPageForMyPage;
 
   // create display sentence array for each page
   function amountOfPages(pageCount) {

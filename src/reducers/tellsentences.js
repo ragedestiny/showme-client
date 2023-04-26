@@ -1,5 +1,5 @@
 // tell sentence reducer, keep track of tell sentences
-export default (tellsentences = [], action) => {
+const tellsentences = (tellsentences = [], action) => {
   switch (action.type) {
     case "FETCH_TELL":
       return action.payload;
@@ -7,3 +7,5 @@ export default (tellsentences = [], action) => {
       return tellsentences;
   }
 };
+
+export default tellsentences;

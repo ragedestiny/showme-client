@@ -8,6 +8,7 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import MyPage from "../pages/MyPage";
 import Admin from "../pages/Admin";
+import Collection from "../pages/Collection";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../actions/user";
@@ -46,7 +47,7 @@ function NavbarComp() {
     }
   }
 
-  // React bootstrap Navbar
+  // React bootstrap Navbar and different routes for different parts of the website
   return (
     <>
       <div>
@@ -71,7 +72,14 @@ function NavbarComp() {
               >
                 Admin
               </Nav.Link>
-              <Nav.Link as={Link} to={"/MyPage"}>
+              <Nav.Link as={Link} to={"/Collections"}>
+                Collections
+              </Nav.Link>
+              <Nav.Link
+                as={Link}
+                to={"/MyPage"}
+                hidden={user.length === 0 ? true : false}
+              >
                 {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
               </Nav.Link>
               <Nav.Link
@@ -91,6 +99,7 @@ function NavbarComp() {
       <div>
         <Routes>
           <Route path="/admin" element={<Admin />} />
+          <Route path="/collections" element={<Collection />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/MyPage" element={<MyPage />} />

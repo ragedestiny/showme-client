@@ -1,5 +1,5 @@
 //  Approval sentences reducer, keep track of sentences awaiting approval
-export default (approvalsentences = [], action) => {
+const approvalsentences = (approvalsentences = [], action) => {
   switch (action.type) {
     case "FETCH_APPROVAL":
       return action.payload;
@@ -11,3 +11,5 @@ export default (approvalsentences = [], action) => {
       return approvalsentences;
   }
 };
+
+export default approvalsentences;
