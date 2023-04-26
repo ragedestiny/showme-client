@@ -61,7 +61,7 @@ function Cards(props) {
                   sx={{ height: 250 }}
                   image={tellSentences[day - 1].image}
                   title={sentence.tell}
-                  onLoad={() => setTimeout(() => isLoading(false), 100)}
+                  onLoad={() => setTimeout(() => isLoading(false), 200)}
                   hidden={loading}
                 />
 

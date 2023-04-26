@@ -273,6 +273,9 @@ body {
 }
 
 .dropdown {
+  -webkit-justify-content: flex-end;
+  align-items: flex-end;
+  -webkit-align-items: flex-end;
   display: flex;
   justify-content: right;
   margin-top: 1%;
