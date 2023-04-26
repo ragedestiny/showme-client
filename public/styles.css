@@ -277,7 +277,7 @@ body {
   align-items: flex-end;
   -webkit-align-items: flex-end;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   margin-top: 1%;
 }
 
