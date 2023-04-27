@@ -18,6 +18,15 @@ function Cards(props) {
   // track if images are done loading
   const [loading, isLoading] = useState(true);
 
+  let count = 0;
+
+  function allLoaded() {
+    count++;
+    if (count >= config.DisplayCollectionSentences) {
+      isLoading(false);
+    }
+  }
+
   // Card component for displaying sample students' approved sentences once global state loaded
   if (approvedSentences.length !== 0) {
     return (
@@ -30,7 +39,6 @@ function Cards(props) {
         {props.displaySentences
           ?.slice(0, config.DisplayCollectionSentences)
           .map((sentence, index) => {
-            console.log("test");
             const day = +sentence.title.match(/\d+$/);
             return (
               <Grid
@@ -63,7 +71,7 @@ function Cards(props) {
                     sx={{ height: 250 }}
                     image={tellSentences[day - 1]?.image}
                     title={sentence.tell}
-                    onLoad={() => setTimeout(() => isLoading(false), 200)}
+                    onLoad={() => allLoaded()}
                     hidden={loading}
                   />
                   <CardContent>

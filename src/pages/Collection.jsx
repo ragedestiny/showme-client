@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchApprovedSentences } from "../actions/approvedsentences";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
+import LoadingOverlay from "react-loading-overlay";
+LoadingOverlay.propTypes = undefined;
 
 function Collection() {
   // get approved sentences from redux global state
@@ -41,18 +43,23 @@ function Collection() {
   }, []);
 
   // collection page to display approved sentences
-  if (approvedSentences.length !== 0) {
-    return (
-      <div className="contentcollection">
-        <div className="dropdown">
-          <FadeMenu newest={Newest} randomize={Randomize} />
-        </div>
-        <div>
-          <Cards displaySentences={displaySentences} />
-        </div>
+  return approvedSentences.length === 0 ? (
+    <LoadingOverlay
+      active={true}
+      spinner
+      text="Loading..."
+      className="contentcollection"
+    ></LoadingOverlay>
+  ) : (
+    <div className="contentcollection">
+      <div className="dropdown">
+        <FadeMenu newest={Newest} randomize={Randomize} />
       </div>
-    );
-  }
+      <div>
+        <Cards displaySentences={displaySentences} />
+      </div>
+    </div>
+  );
 }
 
 export default Collection;
