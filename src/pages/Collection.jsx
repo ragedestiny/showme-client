@@ -4,7 +4,6 @@ import { fetchApprovedSentences } from "../actions/approvedsentences";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
 
-
 function Collection() {
   // get approved sentences from redux global state
   const approvedSentences = useSelector((state) => state.approvedsentences);
@@ -29,20 +28,31 @@ function Collection() {
     setDisplay(newest);
   }
 
-  // on first render, fetch approved sentences from database then randomize them (default display for collection page) 
   useEffect(() => {
-    dispatch(fetchApprovedSentences()).then(() => Randomize());
+    // once global redux state for approvedsentences updates, then update local state to display manipulation
+    setDisplay(() => approvedSentences);
+    // Randomize sentences by default
+    Randomize();
+  }, [approvedSentences]);
+
+  // on first render, fetch approved sentences from database
+  useEffect(() => {
+    dispatch(fetchApprovedSentences());
   }, []);
 
   // collection page to display approved sentences
-  return (
-    <div className="contentcollection">
-      <div className="dropdown">
-        <FadeMenu newest={Newest} randomize={Randomize} />
+  if (approvedSentences.length !== 0) {
+    return (
+      <div className="contentcollection">
+        <div className="dropdown">
+          <FadeMenu newest={Newest} randomize={Randomize} />
+        </div>
+        <div>
+          <Cards displaySentences={displaySentences} />
+        </div>
       </div>
-      <Cards displaySentences={displaySentences} />
-    </div>
-  );
+    );
+  }
 }
 
 export default Collection;
