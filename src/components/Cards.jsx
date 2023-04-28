@@ -19,10 +19,9 @@ function Cards(props) {
   const [loading, isLoading] = useState(true);
 
   let count = 0;
-
   function allLoaded() {
     count++;
-    if (count >= config.DisplayCollectionSentences) {
+    if (count >= config.DisplayCollectionSentences - 1) {
       isLoading(false);
     }
   }
