@@ -110,4 +110,4 @@ function NavbarComp() {
   );
 }
 
-export default NavbarComp;
+export default React.memo(NavbarComp);

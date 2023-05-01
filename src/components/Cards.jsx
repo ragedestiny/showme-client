@@ -105,4 +105,4 @@ function Cards(props) {
   }
 }
 
-export default Cards;
+export default React.memo(Cards);

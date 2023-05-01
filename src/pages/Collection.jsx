@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchApprovedSentences } from "../actions/approvedsentences";
+import React, { useEffect, useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
 import LoadingOverlay from "react-loading-overlay";
@@ -10,7 +9,8 @@ function Collection() {
   // get approved sentences from redux global state
   const approvedSentences = useSelector((state) => state.approvedsentences);
 
-  const dispatch = useDispatch();
+  // tracking first page load
+  const load = useRef(0);
 
   // keep track of local state of sentences being displayed
   const [displaySentences, setDisplay] = useState([]);
@@ -31,15 +31,18 @@ function Collection() {
   }
 
   useEffect(() => {
-    // once global redux state for approvedsentences updates, then update local state to display manipulation
-    setDisplay(() => approvedSentences);
-    // Randomize sentences by default
-    Randomize();
+    // once global redux state for approvedsentences updates, then update local state to display sentences
+
+    if (load.current !== 0) {
+      // Randomize sentences by default
+      Randomize();
+    }
+    load.current++;
   }, [approvedSentences]);
 
-  // on first render, fetch approved sentences from database
   useEffect(() => {
-    dispatch(fetchApprovedSentences());
+    // Randomize Sentences on page load
+    Randomize();
   }, []);
 
   // collection page to display approved sentences
@@ -62,4 +65,4 @@ function Collection() {
   );
 }
 
-export default Collection;
+export default React.memo(Collection);
