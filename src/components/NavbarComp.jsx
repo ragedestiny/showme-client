@@ -51,7 +51,11 @@ function NavbarComp() {
   return (
     <>
       <div>
-        <Navbar variant="light" style={{ backgroundColor: "#e3f2fd" }}>
+        <Navbar
+          variant="light"
+          style={{ backgroundColor: "#e3f2fd" }}
+          expand="sm"
+        >
           <Container>
             <Navbar.Brand as={Link} to={"/"}>
               <img
@@ -62,37 +66,40 @@ function NavbarComp() {
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
-            <Nav className="ms-auto">
-              <Nav.Link
-                as={Link}
-                to={"/Admin"}
-                hidden={
-                  user.id !== process.env.REACT_APP_ADMIN_ID ? true : false
-                }
-              >
-                Admin
-              </Nav.Link>
-              <Nav.Link as={Link} to={"/Collections"}>
-                Collections
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                to={"/MyPage"}
-                hidden={user.length === 0 ? true : false}
-              >
-                {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
-              </Nav.Link>
-              <Nav.Link
-                as={Link}
-                // to={user.length === 0 ? "/login" : "/"}
-                onClick={signInorOut}
-              >
-                {user.length === 0 ? "Login" : "Logout"}
-              </Nav.Link>
-              <Nav.Link as={Link} to={"/about"}>
-                About
-              </Nav.Link>
-            </Nav>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="ms-auto">
+                <Nav.Link
+                  as={Link}
+                  to={"/Admin"}
+                  hidden={
+                    user.id !== process.env.REACT_APP_ADMIN_ID ? true : false
+                  }
+                >
+                  Admin
+                </Nav.Link>
+                <Nav.Link as={Link} to={"/Collections"}>
+                  Collections
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  to={"/MyPage"}
+                  hidden={user.length === 0 ? true : false}
+                >
+                  {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
+                </Nav.Link>
+                <Nav.Link
+                  as={Link}
+                  // to={user.length === 0 ? "/login" : "/"}
+                  onClick={signInorOut}
+                >
+                  {user.length === 0 ? "Login" : "Logout"}
+                </Nav.Link>
+                <Nav.Link as={Link} to={"/about"}>
+                  About
+                </Nav.Link>
+              </Nav>
+            </Navbar.Collapse>
           </Container>
         </Navbar>
       </div>

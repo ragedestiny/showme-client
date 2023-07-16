@@ -2,4 +2,4 @@
 
 export const SentencesPerPageForMyPage = 8;
 
-export const DisplayCollectionSentences = 6;
+export const DisplayCollectionSentences = 12;
