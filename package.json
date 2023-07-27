@@ -63,6 +63,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/plugin-transform-strict-mode": "^7.18.6"
   }
 }
