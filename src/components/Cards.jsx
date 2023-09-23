@@ -21,7 +21,7 @@ function Cards(props) {
   let count = 0;
   function allLoaded() {
     count++;
-    if (count >= config.DisplayCollectionSentences - 2) {
+    if (count >= config.DisplayCollectionSentences - 1) {
       isLoading(false);
     }
   }
