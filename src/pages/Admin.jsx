@@ -19,8 +19,7 @@ import {
   fetchApprovalSentences,
   redoSentence,
 } from "../actions/approvalsentences";
-import LoadingOverlay from "react-loading-overlay";
-LoadingOverlay.propTypes = undefined;
+import LoadingOverlay from "react-loading-overlay-ts";
 
 function Admin() {
   // grab global state from redux store

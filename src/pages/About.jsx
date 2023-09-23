@@ -19,6 +19,7 @@ const About = () => {
             with mere words. Start today!{" "}
           </p>
           <a
+            href="#"
             onClick={() => navigate("/MyPage")}
             className="btn btn-primary joinbutton"
           >

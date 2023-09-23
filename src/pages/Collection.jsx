@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
-import LoadingOverlay from "react-loading-overlay";
-LoadingOverlay.propTypes = undefined;
+import LoadingOverlay from "react-loading-overlay-ts";
 
 function Collection() {
   // get approved sentences from redux global state

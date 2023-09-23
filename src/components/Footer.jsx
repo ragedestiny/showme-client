@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="p-3">
         &copy; {new Date().getFullYear()} Copyright:{" "}
-        <a className="text-dark" onClick={() => navigate("/")}>
+        <a className="text-dark" href="#" onClick={() => navigate("/")}>
           Show ME
         </a>
       </div>
