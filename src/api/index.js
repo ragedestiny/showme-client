@@ -23,7 +23,7 @@ export const fetchTellSentences = () => axios.get(loginUrl);
 // retrieve/create/update user sentences on mypage
 export const fetchUserSentences = (userInfo) => axios.post(url, userInfo);
 export const createSentence = (newSentence) => axios.post(url, newSentence);
-export const editUserSentences = (sentence) => axios.post(url, sentence);
+export const editUserSentences = (sentence) => axios.put(url, sentence);
 
 // retrieve/log out user info from /Login
 export const fetchUser = (userInfo) => axios.post(loginUrl, userInfo);
@@ -31,8 +31,8 @@ export const logoutUser = () => axios.post(loginUrl);
 
 // retrieve/approve/reject sentences awaiting approval
 export const fetchApprovalSentences = () => axios.get(adminUrl);
-export const redoSentence = (sentence) => axios.post(adminUrl, sentence);
-export const approveSentence = (sentence) => axios.post(adminUrl, sentence);
+export const redoSentence = (sentence) => axios.patch(adminUrl, sentence);
+export const approveSentence = (sentence) => axios.patch(adminUrl, sentence);
 
 // retrieve approved sentences
 export const fetchApprovedSentences = () => axios.get(collectionUrl);
