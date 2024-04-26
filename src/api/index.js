@@ -3,19 +3,19 @@ import axios from "axios";
 const url =
   process.env.NODE_ENV.trim() === "development"
     ? "http://localhost:5000/MyPage"
-    : "https://energetic-kit-ox.cyclic.app/MyPage";
+    : "https://showme-backend.onrender.com/MyPage";
 const loginUrl =
   process.env.NODE_ENV.trim() === "development"
     ? "http://localhost:5000/Login"
-    : "https://energetic-kit-ox.cyclic.app/Login";
+    : "https://showme-backend.onrender.com/Login";
 const adminUrl =
   process.env.NODE_ENV.trim() === "development"
     ? "http://localhost:5000/Admin"
-    : "https://energetic-kit-ox.cyclic.app/Admin";
+    : "https://showme-backend.onrender.com/Admin";
 const collectionUrl =
   process.env.NODE_ENV.trim() === "development"
     ? "http://localhost:5000/Collections"
-    : "https://energetic-kit-ox.cyclic.app/Collections";
+    : "https://showme-backend.onrender.com/Collections";
 
 // retrieve tell sentences
 export const fetchTellSentences = () => axios.get(loginUrl);
