@@ -18,7 +18,10 @@ export const editUserSentences = (sentence) => axios.put(mypageURL, sentence);
 
 // retrieve/log out user info from /Login
 export const fetchUser = (userInfo) => axios.post(loginUrl, userInfo);
-export const logoutUser = () => axios.post(loginUrl);
+
+// logout User
+const logoutUrl = url + "Logout";
+export const logoutUser = () => axios.post(logoutUrl);
 
 // retrieve/approve/reject sentences awaiting approval
 const adminUrl = url + "Admin";

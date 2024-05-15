@@ -23,11 +23,11 @@ function MyPage() {
   const dispatch = useDispatch();
 
   // If there is no logged in user, redirect to login page
-  if (Object.keys(user)?.length === 0) {
-    setTimeout(() => {
-      navigate("/Login");
-    }, 300);
-  }
+  // if (Object.keys(user)?.length === 0) {
+  //   setTimeout(() => {
+  //     navigate("/Login");
+  //   }, 300);
+  // }
 
   // set user sentences, pagination related States with React
   const [sentences, setSentences] = useState(user?.ownSentences);
