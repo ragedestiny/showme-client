@@ -8,7 +8,7 @@ import { fetchUser } from "../actions/user";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-function Login() {
+function Login({ show, onHide }) {
   // dispatch for react redux
   const dispatch = useDispatch();
 
@@ -16,11 +16,7 @@ function Login() {
   const navigate = useNavigate();
 
   // state to show login modal
-  const [show, setShow] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  // handle closing the modal
-  const handleClose = () => setShow(false);
 
   // callback when connecting to google identity services
   function handleCallbackResponse(response) {
@@ -33,7 +29,7 @@ function Login() {
     // send credential to backend to create or login user
     dispatch(fetchUser(userObject)).then(() => {
       // auto close login modal
-      setShow(false);
+      onHide();
       // hide loading spinner
       setLoading(false);
 
@@ -60,21 +56,23 @@ function Login() {
   // login modal with React and google identity service
   return (
     <>
-      <Home />
+      {/* <Home /> */}
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={onHide}>
         <Modal.Header closeButton>
           <Modal.Title>Sign in with Google</Modal.Title>
         </Modal.Header>
-        {loading ? (
-          <div className="spinner">
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <div id="signInDiv"></div>
-        )}
+        <Modal.Body>
+          {loading ? (
+            <div className="spinner">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <div id="signInDiv"></div>
+          )}
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={onHide}>
             Close
           </Button>
         </Modal.Footer>

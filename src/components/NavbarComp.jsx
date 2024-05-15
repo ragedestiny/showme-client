@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -22,28 +22,33 @@ function NavbarComp() {
 
   const dispatch = useDispatch();
 
-  function navLogin() {
-    setTimeout(() => {
-      navigate("/");
-    }, 200);
-    setTimeout(() => {
-      navigate("/login");
-    }, 500);
-  }
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // Function to handle showing the login modal
+  const handleShowLoginModal = () => {
+    setShowLoginModal(true);
+  };
+
+  // Function to handle hiding the login modal
+  const handleHideLoginModal = () => {
+    setShowLoginModal(false);
+  };
 
   // on click, sign out user when there is a user signed in
-  function signInorOut() {
-    // sign out user if there there is one signed in
-    if (user.length !== 0) {
-      dispatch(logoutUser()).then(() =>
-        setTimeout(() => {
-          // navigate to homepage once logged out
-          navigate("/");
-        }, 300)
-      );
-    } else if (user.length === 0) {
-      // navigate to login page if no user currently login
-      navLogin();
+  async function signInorOut() {
+    try {
+      // sign out user if there is one signed in
+      if (user.length !== 0) {
+        await dispatch(logoutUser());
+        // Navigate to homepage once logged out
+        navigate("/");
+      } else if (user.length === 0) {
+        // Show login modal if no user is currently logged in
+        handleShowLoginModal();
+      }
+    } catch (error) {
+      // Handle any logout errors here
+      console.error("Logout failed:", error);
     }
   }
 
@@ -86,10 +91,10 @@ function NavbarComp() {
                   to={"/MyPage"}
                   hidden={user.length === 0 ? true : false}
                 >
-                  {user.length === 0 ? `My Page` : `${user.firstName}'s Page`}
+                  {user.length == 0 ? `` : `${user.firstName}'s Page`}
                 </Nav.Link>
                 <Nav.Link
-                  as={Link}
+                  // as={Link}
                   // to={user.length === 0 ? "/login" : "/"}
                   onClick={signInorOut}
                 >
@@ -113,6 +118,10 @@ function NavbarComp() {
           <Route path="/" element={<Home />} />
         </Routes>
       </div>
+      {/* Conditionally render the LoginModal */}
+      {showLoginModal && (
+        <Login show={showLoginModal} onHide={handleHideLoginModal} />
+      )}
     </>
   );
 }

@@ -4,7 +4,7 @@ const user = (user = [], action) => {
     case "FIND_USER":
       return action.payload;
     case "LOGOUT":
-      return action.payload;
+      return [];
     default:
       return user;
   }
