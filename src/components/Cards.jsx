@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -15,16 +15,24 @@ function Cards(props) {
   const tellSentences = useSelector((state) => state.tellsentences);
   const approvedSentences = useSelector((state) => state.approvedsentences);
 
-  // track if images are done loading
-  const [loading, isLoading] = useState(true);
+  // Track loading state for each image individually
+  const [loadingState, setLoadingState] = useState(
+    Array(config.DisplayCollectionSentences).fill(true)
+  );
 
-  let count = 0;
-  function allLoaded() {
-    count++;
-    if (count >= config.DisplayCollectionSentences - 1) {
-      isLoading(false);
-    }
-  }
+  // Reset loading state when displaySentences changes
+  useEffect(() => {
+    setLoadingState(Array(config.DisplayCollectionSentences).fill(true));
+  }, [props.displaySentences]);
+
+  // Function to handle image load
+  const handleImageLoad = (index) => {
+    setLoadingState((prevState) => {
+      const newState = [...prevState];
+      newState[index] = false;
+      return newState;
+    });
+  };
 
   // Card component for displaying sample students' approved sentences once global state loaded
   if (approvedSentences.length !== 0) {
@@ -56,13 +64,13 @@ function Cards(props) {
                     margin: "0% 2%",
                   }}
                 >
-                  {loading && (
+                  {loadingState[index] && (
                     <Skeleton
                       animation="wave"
                       variant="rectangular"
                       width={500}
                       height={250}
-                      hidden={!loading}
+                      hidden={!loadingState[index]}
                     />
                   )}
                   <CardMedia
@@ -70,8 +78,8 @@ function Cards(props) {
                     sx={{ height: 250 }}
                     image={tellSentences[day - 1]?.image}
                     title={sentence.tell}
-                    onLoad={() => allLoaded()}
-                    hidden={loading}
+                    onLoad={() => handleImageLoad(index)}
+                    hidden={loadingState[index]}
                   />
                   <CardContent>
                     <Typography gutterBottom variant="body1" component="div">
