@@ -2,7 +2,8 @@
 const approvalsentences = (approvalsentences = [], action) => {
   switch (action.type) {
     case "FETCH_APPROVAL":
-      return action.payload;
+      waitingForApproval = action.payload;
+      return [...waitingForApproval];
     case "APPROVE":
       return action.payload;
     case "REDO":
