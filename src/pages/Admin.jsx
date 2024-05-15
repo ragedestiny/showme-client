@@ -94,7 +94,6 @@ function Admin() {
                       </MDBTableHead>
                       <MDBTableBody>
                         {[...sentencesAwaitingApproval].map((sentence, i) => {
-                          console.log(sentence);
                           return (
                             <tr
                               className="fw-normal approve-redo"

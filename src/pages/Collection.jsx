@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
 import LoadingOverlay from "react-loading-overlay-ts";
+import { fetchApprovedSentences } from "../actions/approvedsentences";
 
 function Collection() {
   // get approved sentences from redux global state
   const approvedSentences = useSelector((state) => state.approvedsentences);
+  const dispatch = useDispatch();
 
   // tracking first page load
   const load = useRef(0);
@@ -41,7 +43,7 @@ function Collection() {
 
   useEffect(() => {
     // Randomize Sentences on page load
-    Randomize();
+    dispatch(fetchApprovedSentences());
   }, []);
 
   // collection page to display approved sentences

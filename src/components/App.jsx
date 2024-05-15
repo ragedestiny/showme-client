@@ -13,7 +13,7 @@ function App() {
   //as soon as App loads, fetch Tell sentences and approved sentences from server
   useEffect(() => {
     dispatch(getTellSentences());
-    dispatch(fetchApprovedSentences());
+    // dispatch(fetchApprovedSentences());
   }, [dispatch]);
 
   return (
