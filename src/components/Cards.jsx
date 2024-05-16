@@ -34,6 +34,20 @@ function Cards(props) {
     });
   };
 
+  // Automatically set loadingState to false after 5000ms
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setLoadingState((prevState) => {
+        const newState = [...prevState];
+        newState.fill(false); // Set all elements to false
+        return newState;
+      });
+    }, 4000);
+
+    // Clean up the timeout when the component unmounts
+    return () => clearTimeout(timeout);
+  }, [props.displaySentences]);
+
   // Card component for displaying sample students' approved sentences once global state loaded
   if (approvedSentences.length !== 0) {
     return (
