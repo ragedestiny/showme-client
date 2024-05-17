@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import About from "../pages/About";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
@@ -10,7 +10,6 @@ import MyPage from "../pages/MyPage";
 import Admin from "../pages/Admin";
 import Collection from "../pages/Collection";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../actions/user";
 import LoadingOverlay from "react-loading-overlay-ts";
 
@@ -25,6 +24,7 @@ function NavbarComp() {
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   // Function to handle showing the login modal
   const handleShowLoginModal = () => {
@@ -35,6 +35,9 @@ function NavbarComp() {
   const handleHideLoginModal = () => {
     setShowLoginModal(false);
   };
+
+  // Function to handle collapsing the Navbar
+  const handleNavCollapse = () => setExpanded(false);
 
   // on click, sign out user when there is a user signed in
   async function signInorOut() {
@@ -50,6 +53,7 @@ function NavbarComp() {
         // Show login modal if no user is currently logged in
         handleShowLoginModal();
       }
+      handleNavCollapse(); // Collapse the navbar after clicking
     } catch (error) {
       setLoading(false); // Stop loading in case of error
       // Handle any logout errors here
@@ -66,6 +70,7 @@ function NavbarComp() {
             variant="light"
             style={{ backgroundColor: "#e3f2fd" }}
             expand="sm"
+            expanded={expanded}
           >
             <Container>
               <Navbar.Brand as={Link} to={"/"}>
@@ -77,7 +82,10 @@ function NavbarComp() {
                   className="d-inline-block align-top"
                 />
               </Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Toggle
+                aria-controls="basic-navbar-nav"
+                onClick={() => setExpanded(expanded ? false : "expanded")}
+              />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
                   <Nav.Link
@@ -86,23 +94,29 @@ function NavbarComp() {
                     hidden={
                       user.id !== process.env.REACT_APP_ADMIN_ID ? true : false
                     }
+                    onClick={handleNavCollapse}
                   >
                     Admin
                   </Nav.Link>
-                  <Nav.Link as={Link} to={"/Collections"}>
+                  <Nav.Link
+                    as={Link}
+                    to={"/Collections"}
+                    onClick={handleNavCollapse}
+                  >
                     Collections
                   </Nav.Link>
                   <Nav.Link
                     as={Link}
                     to={"/MyPage"}
                     hidden={user.length === 0 ? true : false}
+                    onClick={handleNavCollapse}
                   >
                     {user.length === 0 ? `` : `${user.firstName}'s Page`}
                   </Nav.Link>
                   <Nav.Link onClick={signInorOut}>
                     {user.length === 0 ? "Login" : "Logout"}
                   </Nav.Link>
-                  <Nav.Link as={Link} to={"/about"}>
+                  <Nav.Link as={Link} to={"/about"} onClick={handleNavCollapse}>
                     About
                   </Nav.Link>
                 </Nav>
