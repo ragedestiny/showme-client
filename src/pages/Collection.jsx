@@ -15,6 +15,8 @@ function Collection() {
 
   // keep track of local state of sentences being displayed
   const [displaySentences, setDisplay] = useState([]);
+  // keep track of loading state
+  const [loading, setLoading] = useState(true);
 
   // randomize the sentences for display
   function Randomize() {
@@ -37,6 +39,7 @@ function Collection() {
     if (load.current !== 0) {
       // Randomize sentences by default
       Randomize();
+      setLoading(false);
     }
     load.current++;
   }, [approvedSentences]);
@@ -44,25 +47,23 @@ function Collection() {
   useEffect(() => {
     // Randomize Sentences on page load
     dispatch(fetchApprovedSentences());
-  }, []);
+  }, [dispatch]);
 
   // collection page to display approved sentences
-  return approvedSentences.length === 0 ? (
+  return (
     <LoadingOverlay
-      active={true}
+      active={loading}
       spinner
       text="Loading..."
       className="contentcollection"
-    ></LoadingOverlay>
-  ) : (
-    <div className="contentcollection">
+    >
       <div className="dropdown">
         <FadeMenu newest={Newest} randomize={Randomize} />
       </div>
       <div>
         <Cards displaySentences={displaySentences} />
       </div>
-    </div>
+    </LoadingOverlay>
   );
 }
 
