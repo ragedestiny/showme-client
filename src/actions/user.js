@@ -1,23 +1,23 @@
 import * as api from "../api";
+import Cookies from "js-cookie";
 
 // Retrieve user info
-export const fetchUser = (userInfo) => async (dispatch) => {
+export const fetchUser = () => async (dispatch) => {
   try {
-    const { data } = await api.fetchUser(userInfo);
-
+    const { data } = await api.fetchUser();
     dispatch({ type: "FIND_USER", payload: data });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 };
 
 // Logout User
 export const logoutUser = () => async (dispatch) => {
   try {
-    const { data } = await api.logoutUser();
-
-    dispatch({ type: "LOGOUT", payload: data });
+    await api.logoutUser();
+    Cookies.remove("jwtToken");
+    dispatch({ type: "LOGOUT" });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 };

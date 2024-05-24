@@ -8,36 +8,46 @@ import EditModal from "../components/EditModal";
 import Pagination from "react-bootstrap/Pagination";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserSentences } from "../actions/usersentences";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as config from "../../src/config";
 
 function MyPage() {
   // get states from global react redux store
   const tellSentences = useSelector((state) => state.tellsentences);
   const user = useSelector((state) => state.user);
+  const userSentences = useSelector((state) => state.usersentences);
 
-  // navigate from react router
-  const navigate = useNavigate();
-
-  // dispatch from react redux
   const dispatch = useDispatch();
-
-  // If there is no logged in user, redirect to login page
-  // if (Object.keys(user)?.length === 0) {
-  //   setTimeout(() => {
-  //     navigate("/Login");
-  //   }, 300);
-  // }
+  const location = useLocation();
 
   // set user sentences, pagination related States with React
-  const [sentences, setSentences] = useState(user?.ownSentences);
+  const [sentences, setSentences] = useState([]);
   const [activePage, setActivePage] = useState(1);
   const [pages, setPages] = useState(0);
   const [pagesArray, setPagesArray] = useState([]);
   const itemsPerPage = config.SentencesPerPageForMyPage;
 
+  useEffect(() => {
+    dispatch(getUserSentences());
+  }, [dispatch, location]);
+
+  // Run during first load
+  useEffect(() => {
+    if (userSentences) {
+      setSentences(userSentences);
+      const totalPages = Math.ceil(userSentences.length / itemsPerPage);
+      setPages(totalPages);
+      generatePagination(totalPages);
+    }
+  }, [userSentences]);
+
+  useEffect(() => {
+    // whenever active page and user sentences changes, update display sentences array for pagination
+    generatePagination(pages);
+  }, [activePage, sentences]);
+
   // create display sentence array for each page
-  function amountOfPages(pageCount) {
+  const generatePagination = (pageCount) => {
     const items = [];
     for (let number = 1; number <= pageCount; number++) {
       items.push(
@@ -45,84 +55,50 @@ function MyPage() {
           key={number}
           active={number === activePage}
           indexkey={number}
-          onClick={(e) => {
-            setActivePage(+e.target.getAttribute("indexkey"));
-          }}
+          onClick={(e) => setActivePage(+e.target.getAttribute("indexkey"))}
         >
           {number}
         </Pagination.Item>
       );
     }
-    setPagesArray([...items]);
-  }
+    setPagesArray(items);
+  };
 
   // update the user sentences display
-  function updateSentences(updatedSentences) {
-    // update the user sentences for state
-    setSentences([...updatedSentences]);
-    // find out the new total pages
-    const totalPages = Math.ceil(updatedSentences.length / itemsPerPage);
-    // set total amount of pages
+  const updateSentences = (index, updatedSentence) => {
+    setSentences((prev) => {
+      const newSentences = [...prev];
+      newSentences[index] = updatedSentence;
+      return newSentences;
+    });
+    const totalPages = Math.ceil(userSentences.length / itemsPerPage);
     setPages(totalPages);
-    // send total pages to create display sentence array for each page
-    amountOfPages(totalPages);
-  }
+    generatePagination(totalPages);
+  };
 
   // toggle the edit button
-  function toggleEdit(event) {
+  const toggleEdit = (event) => {
     const index = +event.target.closest(".form")?.getAttribute("value");
-    setSentences((prev) => {
-      return prev.map((sentence, i) => {
-        if (i === index) {
-          const update = {
-            ...sentence,
-            // toggle the display for the edit button
-            hideedit: !sentence.hideedit,
-          };
-          return update;
-        }
-        return sentence;
-      });
-    });
-  }
-
-  useEffect(() => {
-    // whenever active page and user sentences changes, update display sentences array for pagination
-    amountOfPages(pages);
-  }, [activePage, sentences]);
-
-  // Run during first load
-  useEffect(() => {
-    // grab user sentences from database
-    dispatch(getUserSentences(user));
-
-    // set user sentence start
-    setSentences(user?.ownSentences);
-
-    // total amount of pages of user sentences
-    const totalPages = Math.ceil(sentences?.length / itemsPerPage);
-
-    // set total page state
-    setPages(totalPages);
-
-    // send total pages to create display sentence array for each page
-    amountOfPages(totalPages);
-  }, []);
+    setSentences((prev) =>
+      prev.map((sentence, i) =>
+        i === index ? { ...sentence, hideedit: !sentence.hideedit } : sentence
+      )
+    );
+  };
 
   // calculate the displayed sentences according to pagination
-  function topbottom() {
+  const getPaginationRange = () => {
     const topitem =
       (pages - activePage) * itemsPerPage +
-      (sentences?.length % itemsPerPage === 0
+      (sentences.length % itemsPerPage === 0
         ? itemsPerPage
         : sentences.length % itemsPerPage);
     const bottomitem = Math.max(topitem - itemsPerPage, 0);
     return [topitem, bottomitem];
-  }
+  };
 
-  // if there is a login user, display their own sentences
   if (Object.keys(user)?.length !== 0) {
-    // Display MyPage
+    // if there is a login user, display their own sentences
     return (
       <div className="contentmypage">
         <InputSentence
@@ -133,7 +109,7 @@ function MyPage() {
 
         <ListGroup as="ol">
           {[...sentences].reverse().map((sentence, i) => {
-            const [topitem, bottomitem] = topbottom();
+            const [topitem, bottomitem] = getPaginationRange();
             const index = sentences.length - i - 1;
             if (index < topitem && index >= bottomitem) {
               return (
@@ -203,5 +179,4 @@ function MyPage() {
     );
   }
 }
-
 export default MyPage;

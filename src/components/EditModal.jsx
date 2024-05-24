@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,6 @@ import { fetchUser } from "../actions/user";
 
 function EditModal(props) {
   // Pull states from global redux store
-  const user = useSelector((state) => state.user);
   const userSentences = useSelector((state) => state.usersentences);
   const dispatch = useDispatch();
 
@@ -17,49 +16,40 @@ function EditModal(props) {
   const [show, setShow] = useState(false);
 
   // State for newly edited sentence
-  const [newSentence, setNewSentence] = useState("0");
+  const [newSentence, setNewSentence] = useState("");
 
   // handle showing and hiding the edit modal
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setNewSentence(props.sentence.show); // Initialize with the current sentence when the modal is shown
+    setShow(true);
+  };
 
   // update the edited sentence
   function updateSentence() {
-    // if nothing is entered, just return nothing
-    if (newSentence === "" || newSentence === "0") return;
+    // If nothing is entered, just return nothing
+    if (newSentence.trim() === "") return;
 
     // update the user sentences once the edited sentence is submitted
-    let sentenceInfo = userSentences[props.index];
+    const sentenceInfo = userSentences[props.index];
 
-    const updatedSentences = userSentences.map((sentence, index) => {
-      // only update the sentence that was changed
-      if (index === props.index) {
-        sentenceInfo = {
-          ...sentence,
-          show: newSentence,
-          // new date since it was just edited
-          createdAt: new Date(),
-          // reset - teacher needs to recheck sentence again
-          approved: false,
-          toRedo: false,
-        };
-        return sentenceInfo;
-      }
-      // return the other unedited sentences as is
-      return sentence;
-    });
+    const updatedSentenceInfo = {
+      ...sentenceInfo,
+      show: newSentence,
+      createdAt: new Date(),
+      approved: false,
+      toRedo: false,
+    };
 
-    // sending the updated sentences to the backend and update our database
-    // update store
-    dispatch(editSentences([user.id, newSentence, sentenceInfo])).then(() =>
-      dispatch(fetchUser({ sub: user.id }))
+    // Send the updated sentence to the backend and update our database
+    dispatch(editSentences(updatedSentenceInfo)).then(() =>
+      dispatch(fetchUser())
     );
 
     // update frontend display
-    props.update(updatedSentences);
-
-    // clear out the modal textbox
-    setNewSentence("0");
+    props.update(props.index, updatedSentenceInfo);
+    // Clear out the modal textbox
+    setNewSentence("");
   }
 
   // React bootstrap edit modal for editing the sentences
@@ -82,8 +72,7 @@ function EditModal(props) {
             as="textarea"
             className="form-control"
             rows={4}
-            // placeholder="Update your sentence"
-            value={newSentence === "0" ? props.sentence.show : newSentence}
+            value={newSentence}
             onChange={(e) => setNewSentence(e.target.value)}
           ></Modal.Body>
           <Modal.Footer>
@@ -92,9 +81,9 @@ function EditModal(props) {
             </Button>
             <Button
               variant="primary"
-              onClick={(event) => {
+              onClick={() => {
+                updateSentence();
                 handleClose();
-                updateSentence(event);
               }}
             >
               Save Changes

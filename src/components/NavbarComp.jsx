@@ -2,25 +2,23 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import About from "../pages/About";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import MyPage from "../pages/MyPage";
 import Admin from "../pages/Admin";
 import Collection from "../pages/Collection";
-import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../actions/user";
+import { useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
+import useAuthService from "../service/authService";
 
 function NavbarComp() {
   // get user from global react redux store
   const user = useSelector((state) => state.user);
 
   // navigate to different pages with react
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
+  const authService = useAuthService();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,27 +37,15 @@ function NavbarComp() {
   // Function to handle collapsing the Navbar
   const handleNavCollapse = () => setExpanded(false);
 
-  // on click, sign out user when there is a user signed in
-  async function signInorOut() {
-    try {
-      // sign out user if there is one signed in
-      if (user.length !== 0) {
-        setLoading(true); // Start loading
-        await dispatch(logoutUser());
-        setLoading(false); // Stop loading
-        // Navigate to homepage once logged out
-        navigate("/");
-      } else if (user.length === 0) {
-        // Show login modal if no user is currently logged in
-        handleShowLoginModal();
-      }
-      handleNavCollapse(); // Collapse the navbar after clicking
-    } catch (error) {
-      setLoading(false); // Stop loading in case of error
-      // Handle any logout errors here
-      console.error("Logout failed:", error);
-    }
-  }
+  // Use authService hook to sign in or out
+  const signInorOut = async () => {
+    await authService(
+      user,
+      setLoading,
+      handleShowLoginModal,
+      handleNavCollapse
+    );
+  };
 
   // React bootstrap Navbar and different routes for different parts of the website
   return (
@@ -90,10 +76,8 @@ function NavbarComp() {
                 <Nav className="ms-auto">
                   <Nav.Link
                     as={Link}
-                    to={"/Admin"}
-                    hidden={
-                      user.id !== process.env.REACT_APP_ADMIN_ID ? true : false
-                    }
+                    to={"/admin"}
+                    hidden={!user.isAdmin}
                     onClick={handleNavCollapse}
                   >
                     Admin
@@ -108,13 +92,13 @@ function NavbarComp() {
                   <Nav.Link
                     as={Link}
                     to={"/MyPage"}
-                    hidden={user.length === 0 ? true : false}
+                    hidden={Object.keys(user).length === 0 ? true : false}
                     onClick={handleNavCollapse}
                   >
-                    {user.length === 0 ? `` : `${user.firstName}'s Page`}
+                    {user ? `${user.firstName}'s Page` : ""}
                   </Nav.Link>
                   <Nav.Link onClick={signInorOut}>
-                    {user.length === 0 ? "Login" : "Logout"}
+                    {Object.keys(user).length !== 0 ? "Logout" : "Login"}
                   </Nav.Link>
                   <Nav.Link as={Link} to={"/about"} onClick={handleNavCollapse}>
                     About
