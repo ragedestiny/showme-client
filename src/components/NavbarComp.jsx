@@ -17,7 +17,6 @@ function NavbarComp() {
   // get user from global react redux store
   const user = useSelector((state) => state.user);
 
-  // navigate to different pages with react
   const authService = useAuthService();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
