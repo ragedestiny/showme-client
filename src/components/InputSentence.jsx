@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/esm/Container";
@@ -12,14 +12,25 @@ function InputSentence(props) {
   const userSentences = useSelector((state) => state.usersentences);
 
   // set states for current tellsentence/ user sentence / day
-  const [day, setDay] = useState(props.count + 1);
+  const [day, setDay] = useState(1);
   const [sentence, setSentences] = useState(
-    props.sentences[props.count]?.tell || "Come Back Later For More Sentences! "
+    props.sentences[day - 1]?.tell || "Come Back Later For More Sentences! "
   );
-  const [newSentence, setNewSentences] = useState("");
+  const [newSentence, setNewSentence] = useState("");
 
   // for react redux
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const initialDay = userSentences.length + 1;
+    setDay(initialDay);
+  }, [userSentences]);
+
+  useEffect(() => {
+    setSentences(
+      props.sentences[day - 1]?.tell || "Come Back Later For More Sentences!"
+    );
+  }, [props.sentences, day]);
 
   // once a new sentence is entered, update the page and send update to database
   function handleSubmit(event) {
@@ -41,13 +52,12 @@ function InputSentence(props) {
 
     // check to see if there are more tell sentences after this one
     const totalcount = props.sentences.length;
+    const maxDay = totalcount + 1;
 
     // verify sentence count
-    if (day <= totalcount) {
+    if (day <= maxDay) {
       // send sentence to backend database, update redux store with responses
-      dispatch(createSentence(newEntry)).then(() =>
-        dispatch(fetchUser({ sub: user.id }))
-      );
+      dispatch(createSentence(newEntry)).then(() => dispatch(fetchUser()));
 
       // update frontend display
       props.updatelist([...userSentences, newEntry]);
@@ -55,13 +65,18 @@ function InputSentence(props) {
       setDay(newDay);
 
       // display the next tell sentence if there are more
-      newDay <= totalcount
-        ? setSentences(props.sentences[day].tell)
-        : setSentences("Come Back Later For More Sentences! ");
+      if (newDay <= maxDay) {
+        setSentences(
+          props.sentences[newDay - 1]?.tell ||
+            "Come Back Later For More Sentences!"
+        );
+      } else {
+        setSentences("Come Back Later For More Sentences!");
+      }
     }
 
     // clear the input textbox
-    setNewSentences("");
+    setNewSentence("");
   }
 
   // form component for inputting new sentence
@@ -71,15 +86,13 @@ function InputSentence(props) {
         <Form.Group className="mb-3" controlId="currentsentence">
           <Form.Text>Day {day}</Form.Text>
           <br></br>
-          <Form.Label>
-            {sentence ?? props.sentences[props.count]?.tell}
-          </Form.Label>
+          <Form.Label>{sentence}</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}
             placeholder="Don't just tell me, instead SHOW ME!"
             value={newSentence}
-            onChange={(e) => setNewSentences(e.target.value)}
+            onChange={(e) => setNewSentence(e.target.value)}
           />
         </Form.Group>
         <div className="submitSentence">

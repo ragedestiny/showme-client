@@ -1,12 +1,12 @@
 // user reducer, keep track of user
-const user = (user = [], action) => {
+const user = (state = {}, action) => {
   switch (action.type) {
     case "FIND_USER":
       return action.payload;
     case "LOGOUT":
-      return [];
+      return {};
     default:
-      return user;
+      return state;
   }
 };
 

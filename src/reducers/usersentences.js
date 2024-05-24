@@ -12,6 +12,8 @@ const usersentences = (usersentences = [], action) => {
         }
         return sentence;
       });
+    case "CLEAR_ALL":
+      return [];
     default:
       return usersentences;
   }

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Home from "./Home";
-import jwtDecode from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../actions/user";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Cookies from "js-cookie";
+import { loginUser } from "../api";
+import useTimerLogout from "../service/timerLogout";
 
 function Login({ show, onHide }) {
   // dispatch for react redux
@@ -17,24 +18,26 @@ function Login({ show, onHide }) {
 
   // state to show login modal
   const [loading, setLoading] = useState(false);
+  const startTimer = useTimerLogout();
 
   // callback when connecting to google identity services
-  function handleCallbackResponse(response) {
-    // load spinner
+  async function handleCallbackResponse(response) {
     setLoading(true);
 
-    // grab credential from jwt token
-    const userObject = jwtDecode(response.credential);
-
-    // send credential to backend to create or login user
-    dispatch(fetchUser(userObject)).then(() => {
-      // auto close login modal
+    try {
+      const token = response.credential;
+      const res = await loginUser(token);
+      Cookies.set("jwtToken", res.data.token, { expires: 1 / 48 }); // Expires in 30 minutes
+      startTimer();
+      await dispatch(fetchUser());
       onHide();
-      // hide loading spinner
       setLoading(false);
-
       navigate("/MyPage");
-    });
+    } catch (error) {
+      console.error("Authentication error", error);
+      setLoading(false);
+      // Handle authentication error
+    }
   }
 
   useEffect(() => {

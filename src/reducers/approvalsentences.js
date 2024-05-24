@@ -2,11 +2,8 @@
 const approvalsentences = (approvalsentences = [], action) => {
   switch (action.type) {
     case "FETCH_APPROVAL":
-      const waitingForApproval = action.payload;
-      return [...waitingForApproval];
-    case "APPROVE":
       return action.payload;
-    case "REDO":
+    case "UPDATE_APPROVAL_SENTENCES":
       return action.payload;
     default:
       return approvalsentences;

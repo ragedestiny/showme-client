@@ -19,26 +19,25 @@ function Collection() {
   const [loading, setLoading] = useState(true);
 
   // randomize the sentences for display
-  function Randomize() {
+  const randomizeSentences = () => {
     const randomized = [...approvedSentences]
       .map((sentence) => ({ sentence, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ sentence }) => sentence);
     setDisplay(randomized);
-  }
+  };
 
-  // grab the newest sentences for display - already sorted from database
-  function Newest() {
-    const newest = approvedSentences;
-    setDisplay(newest);
-  }
+  // Get the newest sentences for display - already sorted from the database
+  const displayNewestSentences = () => {
+    setDisplay(approvedSentences);
+  };
 
   useEffect(() => {
     // once global redux state for approvedsentences updates, then update local state to display sentences
 
     if (load.current !== 0) {
       // Randomize sentences by default
-      Randomize();
+      randomizeSentences();
       setLoading(false);
     }
     load.current++;
@@ -58,7 +57,10 @@ function Collection() {
       className="contentcollection"
     >
       <div className="dropdown">
-        <FadeMenu newest={Newest} randomize={Randomize} />
+        <FadeMenu
+          newest={displayNewestSentences}
+          randomize={randomizeSentences}
+        />
       </div>
       <div>
         <Cards displaySentences={displaySentences} />
