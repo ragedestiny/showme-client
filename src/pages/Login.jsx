@@ -26,6 +26,7 @@ function Login({ show, onHide }) {
 
     try {
       const token = response.credential;
+      console.log(token);
       const res = await loginUser(token);
       Cookies.set("jwtToken", res.data.token, { expires: 1 / 48 }); // Expires in 30 minutes
       startTimer();
