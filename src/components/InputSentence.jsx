@@ -10,12 +10,11 @@ function InputSentence(props) {
   // Load user from global React redux state if it is loaded already
   const user = useSelector?.((state) => state.user);
   const userSentences = useSelector((state) => state.usersentences);
+  const tellSentences = useSelector((state) => state.tellsentences);
 
   // set states for current tellsentence/ user sentence / day
   const [day, setDay] = useState(1);
-  const [sentence, setSentences] = useState(
-    props.sentences[day - 1]?.tell || "Come Back Later For More Sentences! "
-  );
+  const [sentence, setSentence] = useState("");
   const [newSentence, setNewSentence] = useState("");
 
   // for react redux
@@ -27,35 +26,33 @@ function InputSentence(props) {
   }, [userSentences]);
 
   useEffect(() => {
-    setSentences(
-      props.sentences[day - 1]?.tell || "Come Back Later For More Sentences!"
+    setSentence(
+      tellSentences[day - 1]?.tell || "Come Back Later For More Sentences!"
     );
-  }, [props.sentences, day]);
+  }, [tellSentences, day]);
 
   // once a new sentence is entered, update the page and send update to database
   function handleSubmit(event) {
     // prevents the page from refreshing
     event.preventDefault();
+    // check to see if there are more tell sentences after this one
+    const totalcount = tellSentences.length;
 
     // if user didn't enter anything, disregard submit
     if (newSentence === "") return;
 
-    // create new show sentence
-    const newEntry = {
-      title: "day" + day,
-      tell: sentence,
-      show: newSentence,
-      hideedit: true,
-      author: user._id,
-      GID: user.id,
-    };
-
-    // check to see if there are more tell sentences after this one
-    const totalcount = props.sentences.length;
-    const maxDay = totalcount + 1;
-
     // verify sentence count
-    if (day <= maxDay) {
+    if (day <= totalcount) {
+      // create new show sentence
+      const newEntry = {
+        title: "day" + day,
+        tell: sentence,
+        show: newSentence,
+        hideedit: true,
+        author: user._id,
+        GID: user.id,
+      };
+
       // send sentence to backend database, update redux store with responses
       dispatch(createSentence(newEntry)).then(() => dispatch(fetchUser()));
 
@@ -65,16 +62,20 @@ function InputSentence(props) {
       setDay(newDay);
 
       // display the next tell sentence if there are more
-      if (newDay <= maxDay) {
-        setSentences(
+      if (newDay <= totalcount) {
+        setSentence(
           props.sentences[newDay - 1]?.tell ||
             "Come Back Later For More Sentences!"
         );
       } else {
-        setSentences("Come Back Later For More Sentences!");
+        setSentence("Come Back Later For More Sentences!");
       }
+    } else {
+      // Prevent submission if there are no more tell sentences
+      alert(
+        "You have reached the end of available sentences. Come back later for more sentences!"
+      );
     }
-
     // clear the input textbox
     setNewSentence("");
   }
