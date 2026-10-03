@@ -21,8 +21,6 @@
     "babel-plugin-macros": "^3.1.0",
     "bootstrap": "^5.3.2",
     "immer": "^9.0.21",
-    "js-cookie": "^3.0.5",
-    "jwt-decode": "^3.1.2",
     "mdb-react-ui-kit": "^6.3.0",
     "moment": "^2.29.4",
     "node-fetch": "^3.3.2",
@@ -65,6 +63,7 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "http-proxy-middleware": "^2.0.10",
     "react-scripts": "^5.0.1"
   }
 }

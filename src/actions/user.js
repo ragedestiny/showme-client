@@ -1,5 +1,4 @@
 import * as api from "../api";
-import Cookies from "js-cookie";
 
 // Retrieve user info
 export const fetchUser = () => async (dispatch) => {
@@ -11,13 +10,14 @@ export const fetchUser = () => async (dispatch) => {
   }
 };
 
-// Logout User
+// Logout User. The backend cancels the login and deletes the httpOnly cookie
+// (JavaScript can't). Whatever happens, forget the user on screen too.
 export const logoutUser = () => async (dispatch) => {
   try {
     await api.logoutUser();
-    Cookies.remove("jwtToken");
-    dispatch({ type: "LOGOUT" });
   } catch (error) {
     console.error(error.message);
+  } finally {
+    dispatch({ type: "LOGOUT" });
   }
 };

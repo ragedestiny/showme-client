@@ -1,83 +1,33 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 
-const url =
-  process.env.NODE_ENV.trim() === "development"
-    ? process.env.REACT_APP_LOCAL_URL
-    : process.env.REACT_APP_PRODUCTION_URL;
+// Every request goes to /api on this same site. A proxy forwards it to the
+// backend: src/setupProxy.js during `npm start`, public/_redirects on Netlify.
+// Because the browser only ever talks to this site, it automatically sends the
+// httpOnly login cookie with each request; no code here touches the token.
+export const API = axios.create({ baseURL: "/api" });
 
 // retrieve tell sentences
-export const fetchTellSentences = () => axios.get(`${url}/`);
+export const fetchTellSentences = () => API.get("/");
 
-// Authentication URLs
-const authUrl = `${url}/auth/`;
-export const loginUser = (token) => axios.post(authUrl, { token });
+// exchange the Google ID token for our login cookie
+export const loginUser = (token) => API.post("/auth", { token });
 
-// retrieve user info from /Login using JWT token in headers
-const loginUrl = `${url}/Login`;
-export const fetchUser = () => {
-  const token = Cookies.get("jwtToken");
-  return axios.get(loginUrl, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+// retrieve the signed-in user's info
+export const fetchUser = () => API.get("/Login");
 
 // retrieve/create/update user sentences on mypage
-const mypageURL = `${url}/MyPage`;
-export const fetchUserSentences = () => {
-  const token = Cookies.get("jwtToken");
-  return axios.get(mypageURL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-export const createSentence = (newSentence) => {
-  const token = Cookies.get("jwtToken");
-  return axios.post(mypageURL, newSentence, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-export const editUserSentences = (editedSentence) => {
-  const token = Cookies.get("jwtToken");
-  return axios.patch(mypageURL, editedSentence, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+export const fetchUserSentences = () => API.get("/MyPage");
+export const createSentence = (newSentence) => API.post("/MyPage", newSentence);
+export const editUserSentences = (editedSentence) =>
+  API.patch("/MyPage", editedSentence);
 
 // logout User
-const logoutUrl = `${url}/Logout`;
-export const logoutUser = () => axios.post(logoutUrl);
+export const logoutUser = () => API.post("/Logout");
 
 // retrieve/approve/reject sentences awaiting approval
-const adminUrl = `${url}/Admin`;
-export const fetchApprovalSentences = () => {
-  const token = Cookies.get("jwtToken");
-  return axios.get(adminUrl, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-export const updatePendingApprovalSentences = (status, sentence) => {
-  const token = Cookies.get("jwtToken");
-  return axios.patch(
-    adminUrl,
-    { status, sentence },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-};
+export const fetchApprovalSentences = () => API.get("/Admin");
+export const updatePendingApprovalSentences = (status, sentence) =>
+  API.patch("/Admin", { status, sentence });
 
 // retrieve approved sentences
-const collectionUrl = `${url}/Collections`;
-export const fetchApprovedSentences = () => axios.get(collectionUrl);
+export const fetchApprovedSentences = () => API.get("/Collections");

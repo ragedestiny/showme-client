@@ -5,9 +5,7 @@ import { useDispatch } from "react-redux";
 import { fetchUser } from "../actions/user";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
-import Cookies from "js-cookie";
 import { loginUser } from "../api";
-import useTimerLogout from "../service/timerLogout";
 
 function Login({ show, onHide }) {
   // dispatch for react redux
@@ -18,17 +16,16 @@ function Login({ show, onHide }) {
 
   // state to show login modal
   const [loading, setLoading] = useState(false);
-  const startTimer = useTimerLogout();
 
   // callback when connecting to google identity services
   async function handleCallbackResponse(response) {
     setLoading(true);
 
     try {
-      const token = response.credential;
-      const res = await loginUser(token);
-      Cookies.set("jwtToken", res.data.token, { expires: 1 / 48 }); // Expires in 30 minutes
-      startTimer();
+      // Send Google's ID token to our backend. If it's valid, the backend's
+      // reply sets the httpOnly login cookie; the browser stores it for us.
+      await loginUser(response.credential);
+      // Fetching the user also proves the cookie works end to end.
       await dispatch(fetchUser());
       onHide();
       setLoading(false);
