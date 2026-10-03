@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import reducers from "./reducers";
+import { setupInterceptors } from "./api/interceptors";
 import { PersistGate } from "redux-persist/integration/react";
 import {
   persistStore,
@@ -38,6 +39,9 @@ const store = configureStore({
       },
     }),
 });
+
+// Log out everywhere whenever the backend answers 401
+setupInterceptors(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let persistor = persistStore(store);

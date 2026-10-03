@@ -7,8 +7,6 @@ import { createSentence } from "../actions/usersentences";
 import { fetchUser } from "../actions/user";
 
 function InputSentence(props) {
-  // Load user from global React redux state if it is loaded already
-  const user = useSelector?.((state) => state.user);
   const userSentences = useSelector((state) => state.usersentences);
   const tellSentences = useSelector((state) => state.tellsentences);
 
@@ -49,8 +47,6 @@ function InputSentence(props) {
         tell: sentence,
         show: newSentence,
         hideedit: true,
-        author: user._id,
-        GID: user.id,
       };
 
       // send sentence to backend database, update redux store with responses
