@@ -5,6 +5,9 @@ const approvalsentences = (approvalsentences = [], action) => {
       return action.payload;
     case "UPDATE_APPROVAL_SENTENCES":
       return action.payload;
+    // Don't leave the review queue saved in the browser after an admin logs out
+    case "LOGOUT":
+      return [];
     default:
       return approvalsentences;
   }

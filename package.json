@@ -41,7 +41,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:once": "react-scripts test --watchAll=false"
   },
   "eslintConfig": {
     "extends": [
@@ -65,5 +66,10 @@
     "@svgr/webpack": "^8.1.0",
     "http-proxy-middleware": "^2.0.10",
     "react-scripts": "^5.0.1"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "^axios$": "axios/dist/node/axios.cjs"
+    }
   }
 }

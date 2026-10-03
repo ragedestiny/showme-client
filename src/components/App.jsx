@@ -6,12 +6,15 @@ import { useDispatch } from "react-redux";
 import { getTellSentences } from "../actions/tellsentences";
 import { BrowserRouter } from "react-router-dom";
 import { fetchApprovedSentences } from "../actions/approvedsentences";
+import { checkSession } from "../actions/user";
 
 function App() {
   const dispatch = useDispatch();
 
   //as soon as App loads, fetch Tell sentences and approved sentences from server
   useEffect(() => {
+    // check that a remembered login is still valid on the server
+    dispatch(checkSession());
     dispatch(getTellSentences());
     // dispatch(fetchApprovedSentences());
   }, [dispatch]);
