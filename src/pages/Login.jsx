@@ -42,7 +42,7 @@ function Login({ show, onHide }) {
     /* global google */
     setTimeout(() => {
       google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_CLIENT_ID,
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleCallbackResponse,
       });
       google.accounts.id.renderButton(document.getElementById("signInDiv"), {
