@@ -70,7 +70,7 @@ function Admin() {
               <MDBCard>
                 <MDBCardHeader className="p-3">
                   <h5 className="mb-0">
-                    <MDBIcon fas icon="list-check" className="me-2" />
+                    <MDBIcon fas icon="list-check" className="me-2 fa-width-auto" />
                     Sentences Awaiting Approval
                   </h5>
                 </MDBCardHeader>
@@ -119,7 +119,7 @@ function Admin() {
                                   icon="check"
                                   color="success"
                                   size="lg"
-                                  className="me-3"
+                                  className="me-3 fa-width-auto"
                                   onClick={(e) =>
                                     handleUpdateStatus(e, "approve")
                                   }
@@ -135,7 +135,7 @@ function Admin() {
                                   icon="rotate-right"
                                   color="warning"
                                   size="lg"
-                                  className="me-3"
+                                  className="me-3 fa-width-auto"
                                   onClick={(e) => handleUpdateStatus(e, "redo")}
                                 />
                               </MDBTooltip>
