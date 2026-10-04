@@ -5,7 +5,6 @@ import Footer from "./Footer";
 import { useDispatch } from "react-redux";
 import { getTellSentences } from "../actions/tellsentences";
 import { BrowserRouter } from "react-router-dom";
-import { fetchApprovedSentences } from "../actions/approvedsentences";
 import { checkSession } from "../actions/user";
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
     // check that a remembered login is still valid on the server
     dispatch(checkSession());
     dispatch(getTellSentences());
-    // dispatch(fetchApprovedSentences());
   }, [dispatch]);
 
   return (

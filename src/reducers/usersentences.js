@@ -6,7 +6,7 @@ const usersentences = (usersentences = [], action) => {
     case "CREATE":
       return [...usersentences, action.payload];
     case "EDIT":
-      return usersentences.map((sentence, i) => {
+      return usersentences.map((sentence) => {
         if (sentence.title === action.payload.title) {
           return action.payload;
         }
