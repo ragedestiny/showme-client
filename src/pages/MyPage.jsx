@@ -101,11 +101,7 @@ function MyPage() {
     // if there is a login user, display their own sentences
     return (
       <div className="contentmypage">
-        <InputSentence
-          sentences={tellSentences}
-          count={sentences.length}
-          updatelist={updateSentences}
-        />
+        <InputSentence />
 
         <ListGroup as="ol">
           {[...sentences].reverse().map((sentence, i) => {

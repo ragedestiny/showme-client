@@ -28,8 +28,10 @@ export const renderWithApp = (
 // A pretend network for tests. Axios sends every request through an "adapter";
 // this one never touches the internet. It answers each request with whatever
 // `respond(config)` returns: a status number, or "offline".
+// `respond` may also return a promise, to hold an answer back until the test
+// releases it.
 export const fakeNetwork = (respond) => async (config) => {
-  const outcome = respond(config);
+  const outcome = await respond(config);
 
   if (outcome === "offline") {
     const error = new Error("Network Error");

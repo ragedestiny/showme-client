@@ -95,6 +95,34 @@ describe("MyPage", () => {
     expect(screen.getByText("Tell 4")).toBeInTheDocument();
   });
 
+  it("disables the button while saving, so a double click can't submit twice", async () => {
+    const user = userEvent.setup();
+    let release;
+    const answer = new Promise((resolve) => (release = resolve));
+    const requests = [];
+    renderWithApp(<MyPage />, {
+      state: { user: ada, tellsentences: tells(12), usersentences: shows(2) },
+      route: "/MyPage",
+      respond: (config) => {
+        requests.push(config);
+        if (config.method === "post") return answer; // held back until release()
+        if (config.url === "/MyPage") return { status: 200, data: shows(2) };
+        return { status: 200, data: ada };
+      },
+    });
+    await screen.findByText("Day 3");
+
+    await user.type(textbox(), "First try");
+    await user.click(submitButton());
+    expect(submitButton()).toBeDisabled();
+    await user.click(submitButton());
+    expect(requests.filter((r) => r.method === "post")).toHaveLength(1);
+
+    release({ status: 201, data: { _id: "new", title: "day3", show: "First try" } });
+    await waitFor(() => expect(submitButton()).toBeEnabled());
+    expect(await screen.findByText("Day 4")).toBeInTheDocument();
+  });
+
   it("ignores an empty submission", async () => {
     const user = userEvent.setup();
     const { requests } = renderMyPage();
