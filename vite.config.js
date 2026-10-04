@@ -28,4 +28,10 @@ export default defineConfig({
     // Netlify publishes the build/ folder (Create React App's default)
     outDir: "build",
   },
+
+  test: {
+    // A pretend browser, so component tests have somewhere to draw
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.js"],
+  },
 });
