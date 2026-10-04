@@ -33,5 +33,8 @@ export default defineConfig({
     // A pretend browser, so component tests have somewhere to draw
     environment: "jsdom",
     setupFiles: ["./src/test/setup.js"],
+    // TEMPORARY: mdb-react-ui-kit 6 ships old-style code labelled as modern,
+    // so tests run it through Vite's converter (as the browser build does).
+    server: { deps: { inline: ["mdb-react-ui-kit"] } },
   },
 });
