@@ -41,6 +41,9 @@ const renderMyPage = ({ tellCount = 12, mine = shows(2) } = {}) => {
     if (config.method === "post" && config.url === "/MyPage") {
       return { status: 201, data: { _id: "new", ...JSON.parse(config.data) } };
     }
+    if (config.method === "patch" && config.url === "/MyPage") {
+      return { status: 201, data: JSON.parse(config.data) };
+    }
     if (config.url === "/Login") return { status: 200, data: ada };
     return 200;
   };
@@ -121,6 +124,39 @@ describe("MyPage", () => {
     release({ status: 201, data: { _id: "new", title: "day3", show: "First try" } });
     await waitFor(() => expect(submitButton()).toBeEnabled());
     expect(await screen.findByText("Day 4")).toBeInTheDocument();
+  });
+
+  it("editing: hovering shows the pencil; saving sends the change and shows it", async () => {
+    const user = userEvent.setup();
+    const { requests } = renderMyPage({ mine: shows(2) });
+    const item = (await screen.findByText("Show 2")).closest("form");
+    const pencil = () => item.querySelector('[data-icon="pen-to-square"]');
+    expect(pencil()).not.toBeVisible();
+
+    await user.hover(item);
+    expect(pencil()).toBeVisible();
+    await user.click(pencil());
+
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByText("Tell 2")).toBeInTheDocument();
+    const box = within(dialog).getByRole("textbox");
+    expect(box).toHaveValue("Show 2");
+    await user.clear(box);
+    await user.type(box, "Better 2");
+    await user.click(within(dialog).getByRole("button", { name: "Save Changes" }));
+
+    const patch = await waitFor(() => {
+      const found = requests.find((r) => r.method === "patch" && r.url === "/MyPage");
+      expect(found).toBeDefined();
+      return found;
+    });
+    expect(JSON.parse(patch.data)).toMatchObject({
+      title: "day2",
+      show: "Better 2",
+      approved: false,
+      toRedo: false,
+    });
+    expect(await screen.findByText("Better 2")).toBeInTheDocument();
   });
 
   it("ignores an empty submission", async () => {
