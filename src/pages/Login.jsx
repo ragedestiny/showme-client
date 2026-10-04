@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../actions/user";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { loginUser } from "../api";
 

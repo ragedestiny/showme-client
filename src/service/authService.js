@@ -1,7 +1,7 @@
 import { logoutUser } from "../actions/user";
 import { clearAllSentences } from "../actions/usersentences";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const useAuthService = () => {
   const dispatch = useDispatch();
