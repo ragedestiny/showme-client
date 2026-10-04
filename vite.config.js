@@ -1,9 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+// Writes build/version.txt containing the git commit the site was built from.
+// Netlify provides it as COMMIT_REF. CI reads this file to know when a deploy
+// of a specific commit is live (see qawolf-staging.yml, promote-production.yml).
+const versionFile = () => ({
+  name: "version-file",
+  generateBundle() {
+    this.emitFile({
+      type: "asset",
+      fileName: "version.txt",
+      source: process.env.COMMIT_REF ?? "local",
+    });
+  },
+});
+
 export default defineConfig({
   // JSX support and instant refresh when you save a component
-  plugins: [react()],
+  plugins: [react(), versionFile()],
 
   server: {
     // Google only allows its sign-in button on origins approved in Google

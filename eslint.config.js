@@ -32,9 +32,10 @@ export default [
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
-  // Build scripts run in Node (not the browser), where `process` exists
+  // Build scripts and the Vite config run in Node (not the browser), where
+  // `process` exists
   {
-    files: ["scripts/**/*.js"],
+    files: ["scripts/**/*.js", "vite.config.js"],
     languageOptions: { globals: globals.node },
   },
 ];
