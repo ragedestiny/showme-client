@@ -1,11 +1,12 @@
 name: Lint, Test and Build
 
 # Runs the same three checks we run by hand, on every pull request (including
-# Dependabot's) and every push to main. Netlify deploys separately; this only
-# checks the code.
+# Dependabot's) and every push to staging (merges) or main (promotions).
+# Netlify deploys separately; this only checks the code.
 on:
   push:
     branches:
+      - staging
       - main
   pull_request:
 
