@@ -1,0 +1,81 @@
+name: Promote to production
+
+# Copies the version that is on the staging site (and that QA Wolf tested)
+# to the live site. Run it from the Actions tab with "Run workflow".
+#
+# The live site is Netlify's build of the `production` branch, so promoting
+# means moving that branch to the tested commit; Netlify then rebuilds the
+# live site from it. Nothing is rebuilt from new code: it is the same commit.
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: >-
+          Leave empty to promote what is on staging now. To roll back, enter an
+          earlier commit SHA from main.
+        required: false
+        default: ""
+
+# Never two promotions at once
+concurrency:
+  group: promote-production
+  cancel-in-progress: false
+
+env:
+  STAGING_URL: https://main--show-me-not-tell.netlify.app
+  PRODUCTION_URL: https://show-me-not-tell.netlify.app
+
+jobs:
+  promote:
+    runs-on: ubuntu-24.04
+    # The "production" environment (repo Settings > Environments) asks a
+    # required reviewer to approve before this job starts
+    environment: production
+    permissions:
+      contents: write # to move the production branch
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history, to check the commit came from main
+
+      - name: Choose the commit to promote
+        id: pick
+        env:
+          REQUESTED: ${{ inputs.commit }}
+        run: |
+          if [ -n "$REQUESTED" ]; then
+            sha=$(git rev-parse --verify "$REQUESTED^{commit}")
+          else
+            sha=$(curl -fsS "$STAGING_URL/version.txt")
+          fi
+          # Only code that has been merged to main (and so went through staging)
+          if ! git merge-base --is-ancestor "$sha" origin/main; then
+            echo "::error::$sha is not a commit on main; refusing to promote it"
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Promoting $sha: $(git log -1 --format=%s "$sha")"
+
+      # --force so that rolling back to an older commit is possible
+      - name: Move the production branch to that commit
+        env:
+          SHA: ${{ steps.pick.outputs.sha }}
+        run: git push --force origin "$SHA:refs/heads/production"
+
+      - name: Wait for Netlify to publish it on the live site
+        env:
+          SHA: ${{ steps.pick.outputs.sha }}
+        run: |
+          for attempt in $(seq 1 60); do
+            live=$(curl -fsS "$PRODUCTION_URL/version.txt?check=$attempt" || true)
+            if [ "$live" = "$SHA" ]; then
+              echo "The live site now serves $SHA"
+              exit 0
+            fi
+            echo "Live site is not on $SHA yet, waiting..."
+            sleep 10
+          done
+          echo "::error::The live site did not publish $SHA within 10 minutes"
+          exit 1
