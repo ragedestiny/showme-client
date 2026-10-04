@@ -14,11 +14,14 @@ export const renderWithApp = (
 ) => {
   const store = configureStore({ reducer: reducers, preloadedState: state });
   API.defaults.adapter = fakeNetwork(respond);
-  const view = render(
+  // A wrapper (rather than wrapping `ui` directly) stays in place when a test
+  // calls rerender() with new props.
+  const Wrapper = ({ children }) => (
     <Provider store={store}>
-      <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+      <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
     </Provider>
   );
+  const view = render(ui, { wrapper: Wrapper });
   return { store, ...view };
 };
 
