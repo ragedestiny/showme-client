@@ -43,6 +43,26 @@ const store = configureStore({
 // Log out everywhere whenever the backend answers 401
 setupInterceptors(store);
 
+// Pages are downloaded on demand (see NavbarComp). After a new deploy, a tab
+// that was opened earlier may ask for an old page file that no longer exists.
+// Reload to pick up the new version, but at most once every 10 seconds, so a
+// file that is missing for some other reason (e.g. the network is down)
+// can't cause a reload loop; then the page shows its "couldn't load" message.
+window.addEventListener("vite:preloadError", (event) => {
+  // Offline, a reload can't help (and would replace the app with the
+  // browser's offline page); let the page show its "couldn't load" message
+  if (!navigator.onLine) return;
+  try {
+    const last = Number(sessionStorage.getItem("reloadedForNewVersionAt"));
+    if (Date.now() - last < 10000) return;
+    sessionStorage.setItem("reloadedForNewVersionAt", String(Date.now()));
+  } catch {
+    return; // storage blocked: show the message rather than risk a loop
+  }
+  event.preventDefault();
+  window.location.reload();
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 let persistor = persistStore(store);
 

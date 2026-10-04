@@ -1,27 +1,64 @@
-import React, { useCallback, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link } from "react-router";
-import About from "../pages/About";
+import Spinner from "react-bootstrap/Spinner";
+import { Routes, Route, Link, useLocation } from "react-router";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
-import MyPage from "../pages/MyPage";
-import Admin from "../pages/Admin";
-import Collection from "../pages/Collection";
+import PageErrorBoundary from "./PageErrorBoundary";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import useAuthService from "../service/authService";
 
+// Home is the first page most visitors see, so it ships with the main file.
+// Every other page has its own file, so the home page doesn't wait for code
+// (like MUI for Collections) it doesn't use.
+const loadAbout = () => import("../pages/About");
+const loadLogin = () => import("../pages/Login");
+const loadMyPage = () => import("../pages/MyPage");
+const loadAdmin = () => import("../pages/Admin");
+const loadCollection = () => import("../pages/Collection");
+
+const About = lazy(loadAbout);
+const Login = lazy(loadLogin);
+const MyPage = lazy(loadMyPage);
+const Admin = lazy(loadAdmin);
+const Collection = lazy(loadCollection);
+
+// Once the first page is showing and the browser has nothing else to do,
+// download the other pages' files in the background, so opening them later
+// is instant instead of waiting for the download at the moment of the click.
+const prefetchPages = () => {
+  [loadAbout, loadLogin, loadMyPage, loadAdmin, loadCollection].forEach(
+    (load) => load().catch(() => {}) // a failure here is retried on the click
+  );
+};
+const whenIdle = (callback) =>
+  window.requestIdleCallback
+    ? window.requestIdleCallback(callback, { timeout: 3000 })
+    : setTimeout(callback, 1000); // Safari has no requestIdleCallback
+
+// Shown for the moment a page's code is still downloading
+const PageLoading = () => (
+  <div className="d-flex justify-content-center my-5">
+    <Spinner animation="border" role="status" aria-label="Loading page" />
+  </div>
+);
+
 function NavbarComp() {
   // get user from global react redux store
   const user = useSelector((state) => state.user);
+  const location = useLocation();
 
   const authService = useAuthService();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    whenIdle(prefetchPages);
+  }, []);
 
   // Function to handle showing the login modal
   const handleShowLoginModal = () => {
@@ -110,18 +147,26 @@ function NavbarComp() {
           </Navbar>
         </div>
         <div>
-          <Routes>
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/collections" element={<Collection />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/MyPage" element={<MyPage />} />
-            <Route path="/" element={<Home />} />
-          </Routes>
+          <PageErrorBoundary resetKey={location.pathname}>
+            <Suspense fallback={<PageLoading />}>
+              <Routes>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/collections" element={<Collection />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/MyPage" element={<MyPage />} />
+                <Route path="/" element={<Home />} />
+              </Routes>
+            </Suspense>
+          </PageErrorBoundary>
         </div>
         {/* Conditionally render the LoginModal */}
         {showLoginModal && (
-          <Login show={showLoginModal} onHide={handleHideLoginModal} />
+          <PageErrorBoundary>
+            <Suspense fallback={null}>
+              <Login show={showLoginModal} onHide={handleHideLoginModal} />
+            </Suspense>
+          </PageErrorBoundary>
         )}
       </LoadingOverlay>
     </>
