@@ -1,21 +1,35 @@
-import React, { useCallback, useState } from "react";
+import React, { lazy, Suspense, useCallback, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link } from "react-router";
-import About from "../pages/About";
+import Spinner from "react-bootstrap/Spinner";
+import { Routes, Route, Link, useLocation } from "react-router";
 import Home from "../pages/Home";
-import Login from "../pages/Login";
-import MyPage from "../pages/MyPage";
-import Admin from "../pages/Admin";
-import Collection from "../pages/Collection";
+import PageErrorBoundary from "./PageErrorBoundary";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import useAuthService from "../service/authService";
 
+// Home is the first page most visitors see, so it ships with the main file.
+// Every other page is downloaded only when someone first opens it, so the
+// home page doesn't wait for code (like MUI for Collections) it never uses.
+const About = lazy(() => import("../pages/About"));
+const Login = lazy(() => import("../pages/Login"));
+const MyPage = lazy(() => import("../pages/MyPage"));
+const Admin = lazy(() => import("../pages/Admin"));
+const Collection = lazy(() => import("../pages/Collection"));
+
+// Shown for the moment a page's code is still downloading
+const PageLoading = () => (
+  <div className="d-flex justify-content-center my-5">
+    <Spinner animation="border" role="status" aria-label="Loading page" />
+  </div>
+);
+
 function NavbarComp() {
   // get user from global react redux store
   const user = useSelector((state) => state.user);
+  const location = useLocation();
 
   const authService = useAuthService();
 
@@ -110,18 +124,27 @@ function NavbarComp() {
           </Navbar>
         </div>
         <div>
-          <Routes>
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/collections" element={<Collection />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/MyPage" element={<MyPage />} />
-            <Route path="/" element={<Home />} />
-          </Routes>
+          {/* Keyed by the address, so moving to another page clears an earlier error */}
+          <PageErrorBoundary key={location.pathname}>
+            <Suspense fallback={<PageLoading />}>
+              <Routes>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/collections" element={<Collection />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/MyPage" element={<MyPage />} />
+                <Route path="/" element={<Home />} />
+              </Routes>
+            </Suspense>
+          </PageErrorBoundary>
         </div>
         {/* Conditionally render the LoginModal */}
         {showLoginModal && (
-          <Login show={showLoginModal} onHide={handleHideLoginModal} />
+          <PageErrorBoundary>
+            <Suspense fallback={null}>
+              <Login show={showLoginModal} onHide={handleHideLoginModal} />
+            </Suspense>
+          </PageErrorBoundary>
         )}
       </LoadingOverlay>
     </>
