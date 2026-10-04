@@ -1,5 +1,12 @@
 import React from "react";
 
+// How each browser words "this page's file couldn't be downloaded"
+// (Chrome / Firefox / Safari). Any other error is a bug in the page itself.
+const isDownloadError = (error) =>
+  /dynamically imported module|Importing a module script failed/i.test(
+    error?.message ?? ""
+  );
+
 // A safety net around the page area. If a page crashes or its code can't be
 // downloaded (e.g. the network dropped), show a message there instead of
 // React removing the whole app and leaving a blank screen. The navbar stays,
@@ -9,10 +16,10 @@ import React from "react";
 // keep showing the old page while the next one's code downloads.)
 // (Error boundaries can only be written as classes; React has no hook for it.)
 class PageErrorBoundary extends React.Component {
-  state = { failed: false, failedAt: undefined };
+  state = { failed: false, failedAt: undefined, downloadFailed: false };
 
-  static getDerivedStateFromError() {
-    return { failed: true };
+  static getDerivedStateFromError(error) {
+    return { failed: true, downloadFailed: isDownloadError(error) };
   }
 
   // Remember which page failed; once the address changes, try again
@@ -31,7 +38,11 @@ class PageErrorBoundary extends React.Component {
 
     return (
       <div className="container text-center my-5">
-        <p>Sorry, we couldn't load this page. Check your connection and try again.</p>
+        <p>
+          {this.state.downloadFailed
+            ? "Sorry, we couldn't load this page. Check your connection and try again."
+            : "Sorry, something went wrong on this page. Refreshing may help."}
+        </p>
         <button
           type="button"
           className="btn btn-primary"
