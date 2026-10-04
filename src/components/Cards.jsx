@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -41,8 +41,8 @@ function CardGrid({ sentences, tellSentences }) {
 
   return (
     <Grid
-      padding={"1% 0"}
       container
+      sx={{ padding: "1% 0" }}
       rowSpacing={{ xs: 1, sm: 2, md: 4 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
@@ -50,13 +50,9 @@ function CardGrid({ sentences, tellSentences }) {
         const day = +sentence.title.match(/\d+$/);
         return (
           <Grid
-            xs={4}
-            sm={4}
-            md={4}
+            size={{ xs: 4, sm: 4, md: 4 }}
             key={index}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
           >
             <Card
               sx={{
@@ -66,6 +62,11 @@ function CardGrid({ sentences, tellSentences }) {
                 maxWidth: 500,
                 boxShadow: "1.5px 1.5px rgba(0, 0, 255, .2)",
                 margin: "0% 2%",
+                // Pink-to-aqua gradient. Set here rather than in styles.css
+                // because MUI 9's own card styles (which reset the background
+                // image) come after styles.css; sx always comes after them.
+                backgroundImage:
+                  "radial-gradient(circle, rgba(251, 228, 238, 1) 20%, rgba(236, 255, 255, 1) 77%)",
               }}
             >
               {loadingState[index] && (
@@ -89,13 +90,12 @@ function CardGrid({ sentences, tellSentences }) {
                 <Typography gutterBottom variant="body1" component="div">
                   {sentence.show}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
                   {sentence.tell}
                 </Typography>
                 <Typography
                   variant="body2"
-                  color="text.secondary"
-                  textAlign={"right"}
+                  sx={{ color: "text.secondary", textAlign: "right" }}
                 >
                   {sentence.author.firstName +
                     " " +

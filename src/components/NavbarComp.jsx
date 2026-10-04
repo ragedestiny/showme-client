@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router";
 import About from "../pages/About";
 import Home from "../pages/Home";
 import Login from "../pages/Login";

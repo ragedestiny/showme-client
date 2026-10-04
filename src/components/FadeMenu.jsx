@@ -15,19 +15,17 @@ export default function FadeMenu(props) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (event) => {
+  // Close the menu without changing anything (clicking outside it, Escape)
+  const handleClose = () => setAnchorEl(null);
+
+  // Each menu item says directly which option it is, rather than this
+  // reading a label back from the page.
+  const choose = (option) => {
     setAnchorEl(null);
-    const filter = event.currentTarget?.getAttribute("type");
     // set dropdown menu display to selected
-    if (filter) {
-      setDisplay(filter);
-    }
-
-    // get randomize sentences if random is selected
-    if (filter === "Random") props.randomize();
-
-    // get newest sentences if newest is selected
-    if (filter === "Newest") props.newest();
+    setDisplay(option);
+    if (option === "Random") props.randomize();
+    if (option === "Newest") props.newest();
   };
 
   // react component for dropdown menu for displaying approved sentences
@@ -45,21 +43,15 @@ export default function FadeMenu(props) {
       </Button>
       <Menu
         id="fade-menu"
-        MenuListProps={{
-          "aria-labelledby": "fade-button",
-        }}
+        slotProps={{ list: { "aria-labelledby": "fade-button" } }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         disableScrollLock={true}
-        TransitionComponent={Fade}
+        slots={{ transition: Fade }}
       >
-        <MenuItem onClick={handleClose} type="Random">
-          Random
-        </MenuItem>
-        <MenuItem onClick={handleClose} type="Newest">
-          Newest
-        </MenuItem>
+        <MenuItem onClick={() => choose("Random")}>Random</MenuItem>
+        <MenuItem onClick={() => choose("Newest")}>Newest</MenuItem>
       </Menu>
     </div>
   );
