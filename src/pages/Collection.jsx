@@ -1,52 +1,45 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
 import LoadingOverlay from "react-loading-overlay-ts";
 import { fetchApprovedSentences } from "../actions/approvedsentences";
 
+// A copy of the list in a random order
+const shuffle = (sentences) =>
+  [...sentences]
+    .map((sentence) => ({ sentence, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ sentence }) => sentence);
+
 function Collection() {
   // get approved sentences from redux global state
   const approvedSentences = useSelector((state) => state.approvedsentences);
   const dispatch = useDispatch();
 
-  // tracking first page load
-  const load = useRef(0);
-
-  // keep track of local state of sentences being displayed
+  // The order chosen for display (random by default), and whether we're still
+  // waiting for the server's list
   const [displaySentences, setDisplay] = useState([]);
-  // keep track of loading state
   const [loading, setLoading] = useState(true);
 
-  // randomize the sentences for display
-  const randomizeSentences = () => {
-    const randomized = [...approvedSentences]
-      .map((sentence) => ({ sentence, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ sentence }) => sentence);
-    setDisplay(randomized);
-  };
-
-  // Get the newest sentences for display - already sorted from the database
-  const displayNewestSentences = () => {
-    setDisplay(approvedSentences);
-  };
-
+  // Ask the server for the approved sentences once, and shuffle them as soon
+  // as they arrive. (Using the answer directly means an old list the browser
+  // may have remembered is never shown.)
   useEffect(() => {
-    // once global redux state for approvedsentences updates, then update local state to display sentences
-
-    if (load.current !== 0) {
-      // Randomize sentences by default
-      randomizeSentences();
+    let stillHere = true;
+    dispatch(fetchApprovedSentences()).then((sentences) => {
+      if (!stillHere) return; // the visitor already left this page
+      setDisplay(shuffle(sentences));
       setLoading(false);
-    }
-    load.current++;
-  }, [approvedSentences]);
-
-  useEffect(() => {
-    // Randomize Sentences on page load
-    dispatch(fetchApprovedSentences());
+    });
+    return () => {
+      stillHere = false;
+    };
   }, [dispatch]);
+
+  // The sort menu's choices
+  const randomizeSentences = () => setDisplay(shuffle(approvedSentences));
+  const displayNewestSentences = () => setDisplay(approvedSentences);
 
   // collection page to display approved sentences
   return (
