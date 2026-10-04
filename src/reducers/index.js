@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { combineReducers } from "@reduxjs/toolkit";
 import tellsentences from "./tellsentences";
 import usersentences from "./usersentences";
 import user from "./user";
