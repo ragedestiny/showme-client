@@ -57,6 +57,9 @@ function EditModal(props) {
         onClick={handleShow}
         icon={faPenToSquare}
         bounce
+        // Font Awesome 7 icons are fixed-width by default; keep the
+        // pencil's natural width, as before
+        widthAuto
       />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
