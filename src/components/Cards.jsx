@@ -69,10 +69,13 @@ function Cards(props) {
                 key={index}
                 display="flex"
                 justifyContent="center"
-                alignItems="center"
+                alignItems="stretch"
               >
                 <Card
                   sx={{
+                    // Fill the column (up to 500px) whatever the sentence
+                    // length, and fill the row's height so cards line up.
+                    width: "100%",
                     maxWidth: 500,
                     boxShadow: "1.5px 1.5px rgba(0, 0, 255, .2)",
                     margin: "0% 2%",
