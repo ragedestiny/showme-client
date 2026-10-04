@@ -8,7 +8,7 @@ import EditModal from "../components/EditModal";
 import Pagination from "react-bootstrap/Pagination";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserSentences } from "../actions/usersentences";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import * as config from "../../src/config";
 
 function MyPage() {

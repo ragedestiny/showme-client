@@ -1,0 +1,11 @@
+# How Netlify builds this site. Settings here take priority over the ones in
+# Netlify's dashboard, so the build instructions live with the code.
+# (Redirect rules stay in public/_redirects.)
+
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[build.environment]
+  # Vite needs a recent Node; match the backend and local development.
+  NODE_VERSION = "24"

@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from "vitest";
 import axios from "axios";
 import { setupInterceptors } from "./interceptors";
 import { fakeNetwork } from "../testUtils";
@@ -6,7 +7,7 @@ import { fakeNetwork } from "../testUtils";
 // store that just records which actions were sent.
 const setup = (respond) => {
   const api = axios.create({ baseURL: "/api", adapter: fakeNetwork(respond) });
-  const store = { dispatch: jest.fn() };
+  const store = { dispatch: vi.fn() };
   setupInterceptors(store, api);
   return { api, store };
 };
