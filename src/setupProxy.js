@@ -9,8 +9,8 @@ module.exports = function (app) {
   app.use(
     createProxyMiddleware("/api", {
       target: "http://127.0.0.1:5001",
-      // /api/MyPage -> /showme-backend-789/us-central1/api/MyPage
-      pathRewrite: { "^/api": "/showme-backend-789/us-central1/api" },
+      // /api/MyPage -> /showme-backend-789/us-central1/apiv2/MyPage
+      pathRewrite: { "^/api": "/showme-backend-789/us-central1/apiv2" },
       changeOrigin: true,
     })
   );
