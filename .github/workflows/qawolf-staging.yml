@@ -1,15 +1,16 @@
 name: Test staging with QA Wolf
 
-# The staging site is Netlify's build of the main branch
-# (main--show-me-not-tell.netlify.app, using the staging backend and
-# practice database). After every merge to main:
+# Pull requests merge into the `staging` branch. Netlify builds that branch as
+# the staging site (staging--show-me-not-tell.netlify.app, using the staging
+# backend and practice database). After every merge:
 #   1. wait until the staging site really serves the merged commit
 #   2. tell QA Wolf, whose staging trigger then runs the regression tests
-# Real users only get this version when someone runs "Promote to production".
+# Real users only get this version when someone runs "Promote to production",
+# which moves `main` (the live site) to it.
 on:
   push:
     branches:
-      - main
+      - staging
   # Adds a "Run workflow" button (Actions tab) to re-run the QA Wolf tests
   workflow_dispatch:
 
@@ -19,11 +20,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  STAGING_URL: https://main--show-me-not-tell.netlify.app
+  STAGING_URL: https://staging--show-me-not-tell.netlify.app
 
 jobs:
   test-staging:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-24.04
 
     steps:
