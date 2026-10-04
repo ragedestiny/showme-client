@@ -9,3 +9,11 @@
 [build.environment]
   # Vite needs a recent Node; match the backend and local development.
   NODE_VERSION = "24"
+
+# Deploy previews (one per pull request) and branch deploys use the STAGING
+# backend and its practice database; only production uses the real one.
+[context.deploy-preview]
+  command = "npm run build && node scripts/use-staging-api.js"
+
+[context.branch-deploy]
+  command = "npm run build && node scripts/use-staging-api.js"
