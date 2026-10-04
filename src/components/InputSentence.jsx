@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/esm/Container";
@@ -6,74 +6,57 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSentence } from "../actions/usersentences";
 import { fetchUser } from "../actions/user";
 
-function InputSentence(props) {
+const COME_BACK_LATER = "Come Back Later For More Sentences!";
+
+function InputSentence() {
   const userSentences = useSelector((state) => state.usersentences);
   const tellSentences = useSelector((state) => state.tellsentences);
-
-  // set states for current tellsentence/ user sentence / day
-  const [day, setDay] = useState(1);
-  const [sentence, setSentence] = useState("");
-  const [newSentence, setNewSentence] = useState("");
-
-  // for react redux
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const initialDay = userSentences.length + 1;
-    setDay(initialDay);
-  }, [userSentences]);
+  // What the student is typing, and whether we're waiting for the server
+  const [newSentence, setNewSentence] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    setSentence(
-      tellSentences[day - 1]?.tell || "Come Back Later For More Sentences!"
-    );
-  }, [tellSentences, day]);
+  // Worked out from the store every time this draws, so they're never out of
+  // date: once the server confirms a new sentence, the store's list grows and
+  // these move on to the next day by themselves.
+  const day = userSentences.length + 1;
+  const sentence = tellSentences[day - 1]?.tell || COME_BACK_LATER;
 
-  // once a new sentence is entered, update the page and send update to database
-  function handleSubmit(event) {
+  // once a new sentence is entered, send it to the database
+  async function handleSubmit(event) {
     // prevents the page from refreshing
     event.preventDefault();
-    // check to see if there are more tell sentences after this one
-    const totalcount = tellSentences.length;
 
     // if user didn't enter anything, disregard submit
     if (newSentence === "") return;
 
-    // verify sentence count
-    if (day <= totalcount) {
-      // create new show sentence
-      const newEntry = {
-        title: "day" + day,
-        tell: sentence,
-        show: newSentence,
-        hideedit: true,
-      };
-
-      // send sentence to backend database, update redux store with responses
-      dispatch(createSentence(newEntry)).then(() => dispatch(fetchUser()));
-
-      // update frontend display
-      props.updatelist([...userSentences, newEntry]);
-      const newDay = day + 1;
-      setDay(newDay);
-
-      // display the next tell sentence if there are more
-      if (newDay <= totalcount) {
-        setSentence(
-          props.sentences[newDay - 1]?.tell ||
-            "Come Back Later For More Sentences!"
-        );
-      } else {
-        setSentence("Come Back Later For More Sentences!");
-      }
-    } else {
+    if (day > tellSentences.length) {
       // Prevent submission if there are no more tell sentences
       alert(
         "You have reached the end of available sentences. Come back later for more sentences!"
       );
+      setNewSentence("");
+      return;
     }
-    // clear the input textbox
+
+    const newEntry = {
+      title: "day" + day,
+      tell: sentence,
+      show: newSentence,
+      hideedit: true,
+    };
+
+    // clear the input textbox, and disable the button until the server answers
+    // so a double click can't submit the same day twice
     setNewSentence("");
+    setSaving(true);
+    try {
+      await dispatch(createSentence(newEntry));
+      dispatch(fetchUser());
+    } finally {
+      setSaving(false);
+    }
   }
 
   // form component for inputting new sentence
@@ -93,7 +76,12 @@ function InputSentence(props) {
           />
         </Form.Group>
         <div className="submitSentence">
-          <Button variant="primary" type="submit" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={handleSubmit}
+            disabled={saving}
+          >
             Show ME!
           </Button>
         </div>

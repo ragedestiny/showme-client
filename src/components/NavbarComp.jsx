@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -28,10 +28,12 @@ function NavbarComp() {
     setShowLoginModal(true);
   };
 
-  // Function to handle hiding the login modal
-  const handleHideLoginModal = () => {
+  // Function to handle hiding the login modal. useCallback keeps it the same
+  // function between draws, so Login doesn't set up Google's button again
+  // every time this navbar redraws.
+  const handleHideLoginModal = useCallback(() => {
     setShowLoginModal(false);
-  };
+  }, []);
 
   // Function to handle collapsing the Navbar
   const handleNavCollapse = () => setExpanded(false);

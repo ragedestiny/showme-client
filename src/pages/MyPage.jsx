@@ -20,159 +20,103 @@ function MyPage() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-  // set user sentences, pagination related States with React
-  const [sentences, setSentences] = useState([]);
+  // Only things that belong to this screen are kept as state: which page is
+  // open, and which sentence the mouse is over (to show its edit pencil).
   const [activePage, setActivePage] = useState(1);
-  const [pages, setPages] = useState(0);
-  const [pagesArray, setPagesArray] = useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const itemsPerPage = config.SentencesPerPageForMyPage;
 
   useEffect(() => {
     dispatch(getUserSentences());
   }, [dispatch, location]);
 
-  // Run during first load
-  useEffect(() => {
-    if (userSentences) {
-      setSentences(userSentences);
-      const totalPages = Math.ceil(userSentences.length / itemsPerPage);
-      setPages(totalPages);
-      generatePagination(totalPages);
-    }
-  }, [userSentences]);
-
-  useEffect(() => {
-    // whenever active page and user sentences changes, update display sentences array for pagination
-    generatePagination(pages);
-  }, [activePage, sentences]);
-
-  // create display sentence array for each page
-  const generatePagination = (pageCount) => {
-    const items = [];
-    for (let number = 1; number <= pageCount; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === activePage}
-          indexkey={number}
-          onClick={(e) => setActivePage(+e.target.getAttribute("indexkey"))}
-        >
-          {number}
-        </Pagination.Item>
-      );
-    }
-    setPagesArray(items);
-  };
-
-  // update the user sentences display
-  const updateSentences = (index, updatedSentence) => {
-    setSentences((prev) => {
-      const newSentences = [...prev];
-      newSentences[index] = updatedSentence;
-      return newSentences;
-    });
-    const totalPages = Math.ceil(userSentences.length / itemsPerPage);
-    setPages(totalPages);
-    generatePagination(totalPages);
-  };
-
-  // toggle the edit button
-  const toggleEdit = (event) => {
-    const index = +event.target.closest(".form")?.getAttribute("value");
-    setSentences((prev) =>
-      prev.map((sentence, i) =>
-        i === index ? { ...sentence, hideedit: !sentence.hideedit } : sentence
-      )
-    );
-  };
-
-  // calculate the displayed sentences according to pagination
-  const getPaginationRange = () => {
-    const topitem =
-      (pages - activePage) * itemsPerPage +
-      (sentences.length % itemsPerPage === 0
-        ? itemsPerPage
-        : sentences.length % itemsPerPage);
-    const bottomitem = Math.max(topitem - itemsPerPage, 0);
-    return [topitem, bottomitem];
-  };
+  // Everything below is worked out from the store each time this draws, so
+  // it can never be out of date.
+  const pageCount = Math.ceil(userSentences.length / itemsPerPage);
+  // If the list shrinks, don't stay on a page that no longer exists
+  const page = Math.min(activePage, Math.max(pageCount, 1));
+  // Newest first, then the slice for the open page. Each entry keeps its
+  // position in the original list (index), which matches its day.
+  const pageItems = userSentences
+    .map((sentence, index) => ({ sentence, index }))
+    .reverse()
+    .slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   if (Object.keys(user)?.length !== 0) {
     // if there is a login user, display their own sentences
     return (
       <div className="contentmypage">
-        <InputSentence
-          sentences={tellSentences}
-          count={sentences.length}
-          updatelist={updateSentences}
-        />
+        <InputSentence />
 
         <ListGroup as="ol">
-          {[...sentences].reverse().map((sentence, i) => {
-            const [topitem, bottomitem] = getPaginationRange();
-            const index = sentences.length - i - 1;
-            if (index < topitem && index >= bottomitem) {
-              return (
-                <ListGroup.Item
-                  as="form"
-                  className="d-flex justify-content-between align-items-start form"
-                  key={index}
-                  value={index}
-                  onMouseOver={toggleEdit}
-                  onMouseOut={toggleEdit}
-                  style={{
-                    backgroundColor:
-                      sentence.approved === true
-                        ? "#F1FEEC"
-                        : sentence.toRedo === true
-                        ? "#ffe1a8"
-                        : "rgb(243, 236, 242)",
-                  }}
-                >
-                  <OverlayTrigger
-                    placement="bottom"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={
-                      <Tooltip id="button-tooltip">
-                        {sentence.approved === true
-                          ? "Approved"
-                          : sentence.toRedo === true
-                          ? "Need To Redo"
-                          : "Pending Approval"}
-                      </Tooltip>
-                    }
-                  >
-                    {({ ref, ...triggerHandler }) => (
-                      <div className="ms-2 me-auto">
-                        <div
-                          className="fw-bold wordwrap"
-                          {...triggerHandler}
-                          ref={ref}
-                        >
-                          {sentence.show}
-                        </div>
-                        {tellSentences[index]?.tell}
-                      </div>
-                    )}
-                  </OverlayTrigger>
-                  <Badge bg="primary" pill>
-                    {sentence.title?.toUpperCase()}
-                  </Badge>
-                  <EditModal
-                    sentence={sentence}
-                    sentences={sentences}
-                    list={tellSentences}
-                    index={index}
-                    update={updateSentences}
-                  />
-                </ListGroup.Item>
-              );
-            }
-          })}
+          {pageItems.map(({ sentence, index }) => (
+            <ListGroup.Item
+              as="form"
+              className="d-flex justify-content-between align-items-start form"
+              key={index}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              style={{
+                backgroundColor:
+                  sentence.approved === true
+                    ? "#F1FEEC"
+                    : sentence.toRedo === true
+                    ? "#ffe1a8"
+                    : "rgb(243, 236, 242)",
+              }}
+            >
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 250, hide: 400 }}
+                overlay={
+                  <Tooltip id="button-tooltip">
+                    {sentence.approved === true
+                      ? "Approved"
+                      : sentence.toRedo === true
+                      ? "Need To Redo"
+                      : "Pending Approval"}
+                  </Tooltip>
+                }
+              >
+                {({ ref, ...triggerHandler }) => (
+                  <div className="ms-2 me-auto">
+                    <div
+                      className="fw-bold wordwrap"
+                      {...triggerHandler}
+                      ref={ref}
+                    >
+                      {sentence.show}
+                    </div>
+                    {tellSentences[index]?.tell}
+                  </div>
+                )}
+              </OverlayTrigger>
+              <Badge bg="primary" pill>
+                {sentence.title?.toUpperCase()}
+              </Badge>
+              <EditModal
+                sentence={sentence}
+                tell={tellSentences[index]?.tell}
+                showEdit={hoveredIndex === index}
+              />
+            </ListGroup.Item>
+          ))}
         </ListGroup>
         <div className="pages">
-          {pagesArray.length > 1 && (
-            <Pagination size="sm">{pagesArray}</Pagination>
+          {pageCount > 1 && (
+            <Pagination size="sm">
+              {Array.from({ length: pageCount }, (_, i) => i + 1).map(
+                (number) => (
+                  <Pagination.Item
+                    key={number}
+                    active={number === page}
+                    onClick={() => setActivePage(number)}
+                  >
+                    {number}
+                  </Pagination.Item>
+                )
+              )}
+            </Pagination>
           )}
         </div>
       </div>
