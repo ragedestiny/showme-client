@@ -70,7 +70,7 @@ function Admin() {
               <MDBCard>
                 <MDBCardHeader className="p-3">
                   <h5 className="mb-0">
-                    <MDBIcon fas icon="tasks" className="me-2" />
+                    <MDBIcon fas icon="list-check" className="me-2" />
                     Sentences Awaiting Approval
                   </h5>
                 </MDBCardHeader>
@@ -132,7 +132,7 @@ function Admin() {
                               >
                                 <MDBIcon
                                   fas
-                                  icon="redo"
+                                  icon="rotate-right"
                                   color="warning"
                                   size="lg"
                                   className="me-3"

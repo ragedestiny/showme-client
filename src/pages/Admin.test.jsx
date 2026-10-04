@@ -74,7 +74,7 @@ describe("Admin", () => {
     const { requests } = renderAdmin({ afterUpdate: [waiting[0]] });
     await screen.findByText("Leo Chen");
 
-    fireEvent.click(rows()[1].querySelector(".fa-redo"));
+    fireEvent.click(rows()[1].querySelector(".fa-rotate-right"));
 
     const patch = await waitFor(() => {
       const found = requests.find((r) => r.method === "patch");
