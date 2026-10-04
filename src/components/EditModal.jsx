@@ -3,13 +3,13 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { editSentences } from "../actions/usersentences";
 import { fetchUser } from "../actions/user";
 
+// props.sentence: the sentence to edit; props.tell: its tell sentence;
+// props.showEdit: whether to show the pencil (the mouse is over the sentence)
 function EditModal(props) {
-  // Pull states from global redux store
-  const userSentences = useSelector((state) => state.usersentences);
   const dispatch = useDispatch();
 
   // show or hide the edit modal window
@@ -30,24 +30,20 @@ function EditModal(props) {
     // If nothing is entered, just return nothing
     if (newSentence.trim() === "") return;
 
-    // update the user sentences once the edited sentence is submitted
-    const sentenceInfo = userSentences[props.index];
-
     const updatedSentenceInfo = {
-      ...sentenceInfo,
+      ...props.sentence,
       show: newSentence,
       createdAt: new Date(),
       approved: false,
       toRedo: false,
     };
 
-    // Send the updated sentence to the backend and update our database
+    // Send the updated sentence to the backend. When it answers, the store's
+    // list is updated, and MyPage shows the change.
     dispatch(editSentences(updatedSentenceInfo)).then(() =>
       dispatch(fetchUser())
     );
 
-    // update frontend display
-    props.update(props.index, updatedSentenceInfo);
     // Clear out the modal textbox
     setNewSentence("");
   }
@@ -56,7 +52,7 @@ function EditModal(props) {
   return (
     <>
       <FontAwesomeIcon
-        hidden={props.sentence.hideedit}
+        hidden={!props.showEdit}
         size="lg"
         onClick={handleShow}
         icon={faPenToSquare}
@@ -64,7 +60,7 @@ function EditModal(props) {
       />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{props.list[props.index]?.tell}</Modal.Title>
+          <Modal.Title>{props.tell}</Modal.Title>
         </Modal.Header>
         <form>
           <Modal.Body
