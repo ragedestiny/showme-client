@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { configureStore } from "@reduxjs/toolkit";
 import reducers from "../reducers";
 import { API } from "../api";
@@ -13,7 +14,7 @@ const startApp = ({ remembered, respond }) => {
     reducer: reducers,
     preloadedState: { user: remembered },
   });
-  API.defaults.adapter = jest.fn(fakeNetwork(respond));
+  API.defaults.adapter = vi.fn(fakeNetwork(respond));
   interceptorId = setupInterceptors(store);
   return store;
 };

@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import reducers from "./index";
 
 // The whole app state while someone is logged in.
