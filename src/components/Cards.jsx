@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -41,8 +41,8 @@ function CardGrid({ sentences, tellSentences }) {
 
   return (
     <Grid
-      padding={"1% 0"}
       container
+      sx={{ padding: "1% 0" }}
       rowSpacing={{ xs: 1, sm: 2, md: 4 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
@@ -50,13 +50,9 @@ function CardGrid({ sentences, tellSentences }) {
         const day = +sentence.title.match(/\d+$/);
         return (
           <Grid
-            xs={4}
-            sm={4}
-            md={4}
+            size={{ xs: 4, sm: 4, md: 4 }}
             key={index}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
           >
             <Card
               sx={{
@@ -95,7 +91,7 @@ function CardGrid({ sentences, tellSentences }) {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  textAlign={"right"}
+                  sx={{ textAlign: "right" }}
                 >
                   {sentence.author.firstName +
                     " " +
