@@ -285,14 +285,8 @@ body {
   margin-right: 2vw;
 }
 
-.MuiCard-root {
-  background: rgb(251, 228, 238);
-  background: radial-gradient(
-    circle,
-    rgba(251, 228, 238, 1) 20%,
-    rgba(236, 255, 255, 1) 77%
-  );
-}
+/* The cards' gradient background is set in Cards.jsx (sx), because MUI 9's
+   own card styles load after this file and would override it here. */
 
 .MuiCard-root:hover {
   box-shadow: 5px 10px 20px 1px rgba(0, 0, 0, 0.253);
@@ -313,4 +307,12 @@ body {
 
 .MuiTypography-body2 {
   font-size: small !important;
+}
+
+/* MDB draws the carousel's arrows with Font Awesome characters but asks for
+   the "Font Awesome 6" font; this site uses Font Awesome 7. Starting with
+   .carousel makes this rule beat MDB's, which loads after this file. */
+.carousel .carousel-control-prev-icon::after,
+.carousel .carousel-control-next-icon::after {
+  font-family: "Font Awesome 7 Free", "Font Awesome 6 Free";
 }

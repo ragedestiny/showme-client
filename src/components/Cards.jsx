@@ -62,6 +62,11 @@ function CardGrid({ sentences, tellSentences }) {
                 maxWidth: 500,
                 boxShadow: "1.5px 1.5px rgba(0, 0, 255, .2)",
                 margin: "0% 2%",
+                // Pink-to-aqua gradient. Set here rather than in styles.css
+                // because MUI 9's own card styles (which reset the background
+                // image) come after styles.css; sx always comes after them.
+                backgroundImage:
+                  "radial-gradient(circle, rgba(251, 228, 238, 1) 20%, rgba(236, 255, 255, 1) 77%)",
               }}
             >
               {loadingState[index] && (
