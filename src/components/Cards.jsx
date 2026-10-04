@@ -90,13 +90,12 @@ function CardGrid({ sentences, tellSentences }) {
                 <Typography gutterBottom variant="body1" component="div">
                   {sentence.show}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
                   {sentence.tell}
                 </Typography>
                 <Typography
                   variant="body2"
-                  color="text.secondary"
-                  sx={{ textAlign: "right" }}
+                  sx={{ color: "text.secondary", textAlign: "right" }}
                 >
                   {sentence.author.firstName +
                     " " +
