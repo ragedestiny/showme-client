@@ -30,12 +30,6 @@ export default [
       "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
       // Keeps instant refresh working: component files should only export components
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      // TO DO: these flag components that copy data into state inside effects
-      // (Cards, InputSentence, MyPage). Fixing them means reworking those
-      // components, so they're warnings until that's done with component tests.
-      // https://react.dev/learn/you-might-not-need-an-effect
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/immutability": "warn",
     },
   },
 ];

@@ -17,30 +17,31 @@ function Login({ show, onHide }) {
   // state to show login modal
   const [loading, setLoading] = useState(false);
 
-  // callback when connecting to google identity services
-  async function handleCallbackResponse(response) {
-    setLoading(true);
-
-    try {
-      // Send Google's ID token to our backend. If it's valid, the backend's
-      // reply sets the httpOnly login cookie; the browser stores it for us.
-      await loginUser(response.credential);
-      // Fetching the user also proves the cookie works end to end.
-      await dispatch(fetchUser());
-      onHide();
-      setLoading(false);
-      navigate("/MyPage");
-    } catch (error) {
-      console.error("Authentication error", error);
-      setLoading(false);
-      // Handle authentication error
-    }
-  }
-
+  // Set up Google's sign-in button. The function Google calls after a sign-in
+  // lives inside this effect, so Google always gets a version that uses the
+  // current onHide/navigate (not ones remembered from the first draw).
   useEffect(() => {
-    // setup for Google identity servive
+    async function handleCallbackResponse(response) {
+      setLoading(true);
+
+      try {
+        // Send Google's ID token to our backend. If it's valid, the backend's
+        // reply sets the httpOnly login cookie; the browser stores it for us.
+        await loginUser(response.credential);
+        // Fetching the user also proves the cookie works end to end.
+        await dispatch(fetchUser());
+        onHide?.();
+        setLoading(false);
+        navigate("/MyPage");
+      } catch (error) {
+        console.error("Authentication error", error);
+        setLoading(false);
+      }
+    }
+
+    // setup for Google identity service, once the modal has drawn its box
     /* global google */
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleCallbackResponse,
@@ -51,7 +52,10 @@ function Login({ show, onHide }) {
       });
       google.accounts.id.prompt();
     }, 300);
-  }, []);
+
+    // If the popup closes first, cancel: there'd be no box to draw into
+    return () => clearTimeout(timer);
+  }, [dispatch, navigate, onHide]);
 
   // login modal with React and google identity service
   return (
