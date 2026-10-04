@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback, useState } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -11,13 +11,32 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import useAuthService from "../service/authService";
 
 // Home is the first page most visitors see, so it ships with the main file.
-// Every other page is downloaded only when someone first opens it, so the
-// home page doesn't wait for code (like MUI for Collections) it never uses.
-const About = lazy(() => import("../pages/About"));
-const Login = lazy(() => import("../pages/Login"));
-const MyPage = lazy(() => import("../pages/MyPage"));
-const Admin = lazy(() => import("../pages/Admin"));
-const Collection = lazy(() => import("../pages/Collection"));
+// Every other page has its own file, so the home page doesn't wait for code
+// (like MUI for Collections) it doesn't use.
+const loadAbout = () => import("../pages/About");
+const loadLogin = () => import("../pages/Login");
+const loadMyPage = () => import("../pages/MyPage");
+const loadAdmin = () => import("../pages/Admin");
+const loadCollection = () => import("../pages/Collection");
+
+const About = lazy(loadAbout);
+const Login = lazy(loadLogin);
+const MyPage = lazy(loadMyPage);
+const Admin = lazy(loadAdmin);
+const Collection = lazy(loadCollection);
+
+// Once the first page is showing and the browser has nothing else to do,
+// download the other pages' files in the background, so opening them later
+// is instant instead of waiting for the download at the moment of the click.
+const prefetchPages = () => {
+  [loadAbout, loadLogin, loadMyPage, loadAdmin, loadCollection].forEach(
+    (load) => load().catch(() => {}) // a failure here is retried on the click
+  );
+};
+const whenIdle = (callback) =>
+  window.requestIdleCallback
+    ? window.requestIdleCallback(callback, { timeout: 3000 })
+    : setTimeout(callback, 1000); // Safari has no requestIdleCallback
 
 // Shown for the moment a page's code is still downloading
 const PageLoading = () => (
@@ -36,6 +55,10 @@ function NavbarComp() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    whenIdle(prefetchPages);
+  }, []);
 
   // Function to handle showing the login modal
   const handleShowLoginModal = () => {
@@ -124,8 +147,7 @@ function NavbarComp() {
           </Navbar>
         </div>
         <div>
-          {/* Keyed by the address, so moving to another page clears an earlier error */}
-          <PageErrorBoundary key={location.pathname}>
+          <PageErrorBoundary resetKey={location.pathname}>
             <Suspense fallback={<PageLoading />}>
               <Routes>
                 <Route path="/admin" element={<Admin />} />

@@ -4,12 +4,26 @@ import React from "react";
 // downloaded (e.g. the network dropped), show a message there instead of
 // React removing the whole app and leaving a blank screen. The navbar stays,
 // so the visitor can still go somewhere else.
+// Pass the current address as `resetKey`: moving to another page clears the
+// message. (Unlike a `key`, this keeps the same boundary, so React Router can
+// keep showing the old page while the next one's code downloads.)
 // (Error boundaries can only be written as classes; React has no hook for it.)
 class PageErrorBoundary extends React.Component {
-  state = { failed: false };
+  state = { failed: false, failedAt: undefined };
 
   static getDerivedStateFromError() {
     return { failed: true };
+  }
+
+  // Remember which page failed; once the address changes, try again
+  static getDerivedStateFromProps(props, state) {
+    if (state.failed && state.failedAt === undefined) {
+      return { failedAt: props.resetKey };
+    }
+    if (state.failed && props.resetKey !== state.failedAt) {
+      return { failed: false, failedAt: undefined };
+    }
+    return null;
   }
 
   render() {

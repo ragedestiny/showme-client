@@ -28,6 +28,28 @@ describe("PageErrorBoundary", () => {
     expect(screen.getByRole("button", { name: /refresh/i })).toBeInTheDocument();
   });
 
+  it("clears the message when the visitor moves to another page", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const BrokenPage = lazy(() => Promise.reject(new Error("Failed to fetch")));
+
+    const { rerender } = render(
+      <PageErrorBoundary resetKey="/admin">
+        <Suspense fallback={null}>
+          <BrokenPage />
+        </Suspense>
+      </PageErrorBoundary>
+    );
+    await screen.findByText(/couldn't load this page/i);
+
+    rerender(
+      <PageErrorBoundary resetKey="/about">
+        <p>About page</p>
+      </PageErrorBoundary>
+    );
+    expect(screen.getByText("About page")).toBeInTheDocument();
+    expect(screen.queryByText(/couldn't load this page/i)).not.toBeInTheDocument();
+  });
+
   it("shows the page normally when nothing goes wrong", () => {
     render(
       <PageErrorBoundary>

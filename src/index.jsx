@@ -49,6 +49,9 @@ setupInterceptors(store);
 // file that is missing for some other reason (e.g. the network is down)
 // can't cause a reload loop; then the page shows its "couldn't load" message.
 window.addEventListener("vite:preloadError", (event) => {
+  // Offline, a reload can't help (and would replace the app with the
+  // browser's offline page); let the page show its "couldn't load" message
+  if (!navigator.onLine) return;
   try {
     const last = Number(sessionStorage.getItem("reloadedForNewVersionAt"));
     if (Date.now() - last < 10000) return;
