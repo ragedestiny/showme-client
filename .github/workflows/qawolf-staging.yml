@@ -5,6 +5,8 @@ name: Test staging with QA Wolf
 # backend and practice database). After every merge:
 #   1. wait until the staging site really serves the merged commit
 #   2. tell QA Wolf, whose staging trigger then runs the regression tests
+#   3. wait for QA Wolf's verdict: this job (the "QA Wolf verdict" check on
+#      the commit) passes only if QA Wolf passed it
 # Real users only get this version when someone runs "Promote to production",
 # which moves `main` (the live site) to it.
 on:
@@ -24,8 +26,11 @@ env:
 
 jobs:
   test-staging:
+    # The check's name; "Promote to production" looks for it
+    name: QA Wolf verdict
     if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-24.04
+    timeout-minutes: 40
 
     steps:
       # Every build writes the commit it was built from into /version.txt
@@ -46,6 +51,7 @@ jobs:
           exit 1
 
       - name: Tell QA Wolf the staging site was deployed
+        id: report
         uses: qawolf/notify-qawolf-on-deploy-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,3 +60,22 @@ jobs:
           workspace-id: xoniuprcn2am5nh63rx8fn6cotea # not a secret
           environment: staging # the QA Wolf environment's alias
           deployment-url: ${{ env.STAGING_URL }}
+
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      # QA Wolf's SDK is installed only for this step, outside the project
+      - name: Wait for QA Wolf's verdict
+        env:
+          QAWOLF_API_KEY: ${{ secrets.QAWOLF_API_KEY }}
+          DEPLOYMENT_ID: ${{ steps.report.outputs.deployment-id }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/qawolf"
+          npm install --no-save --silent --prefix "$RUNNER_TEMP/qawolf" @qawolf/ci-sdk@3.3.0
+          cp .github/scripts/qawolf-verdict.mjs "$RUNNER_TEMP/qawolf/"
+          node "$RUNNER_TEMP/qawolf/qawolf-verdict.mjs"
