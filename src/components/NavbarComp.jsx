@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Routes, Route, Link, useLocation } from "react-router";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router";
 import Home from "../pages/Home";
 import PageErrorBoundary from "./PageErrorBoundary";
 import PageLoading from "./PageLoading";
@@ -38,6 +38,18 @@ const whenIdle = (callback) =>
     ? window.requestIdleCallback(callback, { timeout: 3000 })
     : setTimeout(callback, 1000); // Safari has no requestIdleCallback
 
+// Going to /login directly (an old bookmark, or typing the address): open the
+// sign-in pop-up over the home page, just like the Login link does. Login is
+// a pop-up, so showing it on a page of its own left that page empty.
+function OpenLogin({ onOpen }) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    onOpen();
+    navigate("/", { replace: true });
+  }, [onOpen, navigate]);
+  return null;
+}
+
 function NavbarComp() {
   // get user from global react redux store
   const user = useSelector((state) => state.user);
@@ -53,10 +65,11 @@ function NavbarComp() {
     whenIdle(prefetchPages);
   }, []);
 
-  // Function to handle showing the login modal
-  const handleShowLoginModal = () => {
+  // Function to handle showing the login modal (the same function between
+  // draws, so OpenLogin's effect runs once)
+  const handleShowLoginModal = useCallback(() => {
     setShowLoginModal(true);
-  };
+  }, []);
 
   // Function to handle hiding the login modal. useCallback keeps it the same
   // function between draws, so Login doesn't set up Google's button again
@@ -146,7 +159,10 @@ function NavbarComp() {
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/collections" element={<Collection />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/login"
+                  element={<OpenLogin onOpen={handleShowLoginModal} />}
+                />
                 <Route path="/MyPage" element={<MyPage />} />
                 <Route path="/" element={<Home />} />
               </Routes>

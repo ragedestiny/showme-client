@@ -20,14 +20,21 @@ const fromServer = (n) =>
 
 const shownOrder = () => screen.queryAllByText(/^Sentence \d+$/).map((el) => el.textContent);
 
-const renderCollection = ({ server = fromServer(6), remembered = [] } = {}) =>
-  renderWithApp(<Collection />, {
+// `server`: the list the server sends, or a function giving each answer in turn
+// (a status, "offline", or { status, data })
+const renderCollection = ({ server = fromServer(6), remembered = [] } = {}) => {
+  let calls = 0;
+  return renderWithApp(<Collection />, {
     // `remembered`: an old list redux-persist may have restored
     state: { tellsentences, approvedsentences: remembered },
     route: "/Collections",
-    respond: (config) =>
-      config.url === "/Collections" ? { status: 200, data: server } : 200,
+    respond: (config) => {
+      if (config.url !== "/Collections") return 200;
+      calls += 1;
+      return typeof server === "function" ? server(calls) : { status: 200, data: server };
+    },
   });
+};
 
 const pickSort = async (user, choice) => {
   await user.click(screen.getByRole("button", { name: /random|newest/i }));
@@ -73,5 +80,39 @@ describe("Collection", () => {
 
     await waitFor(() => expect(shownOrder()).toHaveLength(6));
     expect(shownOrder().sort()).toEqual(fromServer(6).map((s) => s.show).sort());
+  });
+
+  it("says so, with a Try again button, when the collection can't be loaded", async () => {
+    renderCollection({ server: () => "offline" });
+
+    const message = await screen.findByRole("alert");
+    expect(message).toHaveTextContent(/couldn't load the collection/i);
+    expect(within(message).getByRole("button", { name: /try again/i })).toBeInTheDocument();
+    expect(shownOrder()).toHaveLength(0);
+  });
+
+  it("Try again loads the collection again", async () => {
+    const user = userEvent.setup();
+    renderCollection({ server: (call) => (call === 1 ? 500 : { status: 200, data: fromServer(3) }) });
+
+    await user.click(await screen.findByRole("button", { name: /try again/i }));
+
+    await waitFor(() => expect(shownOrder()).toHaveLength(3));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("never brings back an old list remembered by the browser when loading fails", async () => {
+    const old = [{ ...fromServer(1)[0], _id: "old", show: "Sentence 99" }];
+    renderCollection({ server: () => "offline", remembered: old });
+
+    await screen.findByRole("alert");
+    expect(screen.queryByText("Sentence 99")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /random|newest/i })).not.toBeInTheDocument();
+  });
+
+  it("says when no sentences have been approved yet", async () => {
+    renderCollection({ server: [] });
+
+    expect(await screen.findByText(/no sentences have been approved yet/i)).toBeInTheDocument();
   });
 });
