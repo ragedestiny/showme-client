@@ -65,7 +65,7 @@ function Collection() {
       className="contentcollection"
     >
       {failed ? (
-        <div className="collection-message" role="alert">
+        <div className="page-message" role="alert">
           <p>
             We couldn&apos;t load the collection. Check your internet
             connection, then try again.
@@ -83,7 +83,7 @@ function Collection() {
             />
           </div>
           {!loading && sentences.length === 0 ? (
-            <p className="collection-message">
+            <p className="page-message">
               No sentences have been approved yet.
             </p>
           ) : (

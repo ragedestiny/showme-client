@@ -9,6 +9,7 @@ import PageLoading from "./PageLoading";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import useAuthService from "../service/authService";
+import { OpenLoginContext } from "./loginPopup";
 
 // Home is the first page most visitors see, so it ships with the main file.
 // Every other page has its own file, so the home page doesn't wait for code
@@ -155,17 +156,20 @@ function NavbarComp() {
         <div>
           <PageErrorBoundary resetKey={location.pathname}>
             <Suspense fallback={<PageLoading />}>
-              <Routes>
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/collections" element={<Collection />} />
-                <Route path="/about" element={<About />} />
-                <Route
-                  path="/login"
-                  element={<OpenLogin onOpen={handleShowLoginModal} />}
-                />
-                <Route path="/MyPage" element={<MyPage />} />
-                <Route path="/" element={<Home />} />
-              </Routes>
+              {/* Lets pages open the sign-in pop-up (see loginPopup.js) */}
+              <OpenLoginContext.Provider value={handleShowLoginModal}>
+                <Routes>
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/collections" element={<Collection />} />
+                  <Route path="/about" element={<About />} />
+                  <Route
+                    path="/login"
+                    element={<OpenLogin onOpen={handleShowLoginModal} />}
+                  />
+                  <Route path="/MyPage" element={<MyPage />} />
+                  <Route path="/" element={<Home />} />
+                </Routes>
+              </OpenLoginContext.Provider>
             </Suspense>
           </PageErrorBoundary>
         </div>

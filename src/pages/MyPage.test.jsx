@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MyPage from "./MyPage";
+import { OpenLoginContext } from "../components/loginPopup";
 import { renderWithApp } from "../test/testUtils.jsx";
 
 // Characterization tests: they record what MyPage does today, from a
@@ -61,6 +62,30 @@ const listedShows = () =>
   screen.queryAllByText(/^Show \d+$/).map((el) => el.textContent);
 
 describe("MyPage", () => {
+  it("asks a visitor who isn't signed in to sign in, instead of showing an empty page", async () => {
+    const openLogin = vi.fn();
+    const requests = [];
+    renderWithApp(
+      <OpenLoginContext.Provider value={openLogin}>
+        <MyPage />
+      </OpenLoginContext.Provider>,
+      {
+        state: { user: {}, tellsentences: tells(12), usersentences: [] },
+        route: "/MyPage",
+        respond: (config) => {
+          requests.push(config);
+          return 401;
+        },
+      }
+    );
+
+    expect(screen.getByText(/sign in to write your own sentences/i)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    expect(openLogin).toHaveBeenCalledTimes(1);
+    // There's nobody to fetch sentences for, so the server isn't asked
+    expect(requests).toHaveLength(0);
+  });
+
   it("shows the next day and its tell sentence", async () => {
     renderMyPage({ mine: shows(2) });
 

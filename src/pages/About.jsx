@@ -1,9 +1,21 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useOpenLogin } from "../components/loginPopup";
 
 // About page
 const About = () => {
   const navigate = useNavigate();
+  const openLogin = useOpenLogin();
+  const user = useSelector((state) => state.user);
+
+  // Join Us: a signed-in student goes straight to their page; anyone else
+  // gets the sign-in pop-up first (signing in then opens their page)
+  const join = (event) => {
+    event.preventDefault(); // stay in the app: no reload, no "#" in the address
+    if (Object.keys(user).length !== 0) navigate("/MyPage");
+    else openLogin();
+  };
 
   return (
     <div className="contentmypage">
@@ -19,8 +31,8 @@ const About = () => {
             with mere words. Start today!{" "}
           </p>
           <a
-            href="#"
-            onClick={() => navigate("/MyPage")}
+            href="/MyPage"
+            onClick={join}
             className="btn btn-primary joinbutton"
           >
             Join Us!
