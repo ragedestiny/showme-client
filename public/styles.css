@@ -272,6 +272,91 @@ body {
   min-height: 87vh;
 }
 
+/* "Loading..." while a page's code downloads (PageLoading.jsx): placed and
+   sized like the collection page's own "Loading..." (whose sort menu's 1% top
+   margin pushes it down), so the handover between the two doesn't move it,
+   and the footer stays at the bottom */
+.page-loading {
+  min-height: 87vh;
+  margin-top: 1%;
+}
+
+/* "Loading..." while the app's code downloads (#app-loading in index.html,
+   removed by App.jsx): a copy of react-loading-overlay-ts's overlay, covering
+   the whole window. It fades in after 0.3 s, so a quick load never shows it */
+#app-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  text-align: center;
+  font-size: 1.2em;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  animation: app-loading-appear 0.2s ease-in 0.3s forwards;
+}
+
+.app-loading-content {
+  margin: auto;
+}
+
+.app-loading-spinner {
+  position: relative;
+  width: 50px;
+  margin: 0 auto 10px auto;
+}
+
+.app-loading-spinner::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.app-loading-spinner svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  animation: app-loading-rotate 2s linear infinite;
+}
+
+.app-loading-spinner circle {
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: app-loading-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes app-loading-appear {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes app-loading-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes app-loading-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
 .dropdown {
   -webkit-justify-content: flex-end;
   align-items: flex-end;

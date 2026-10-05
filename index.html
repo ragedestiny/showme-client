@@ -25,6 +25,20 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Shown while the app's code downloads, until the app has drawn its
+         first screen (App.jsx removes it): the same "Loading..." overlay the
+         pages use, styled in styles.css. It fades in after 0.3 s, so a quick
+         load never flashes it -->
+    <div id="app-loading" role="status">
+      <div class="app-loading-content">
+        <div class="app-loading-spinner">
+          <svg viewBox="25 25 50 50">
+            <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+          </svg>
+        </div>
+        Loading...
+      </div>
+    </div>
     <div id="root"></div>
     <!-- Vite starts building the app from here -->
     <script type="module" src="/src/index.jsx"></script>
