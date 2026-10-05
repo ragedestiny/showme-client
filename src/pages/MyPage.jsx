@@ -6,10 +6,12 @@ import Tooltip from "react-bootstrap/Tooltip";
 import InputSentence from "../components/InputSentence";
 import EditModal from "../components/EditModal";
 import Pagination from "react-bootstrap/Pagination";
+import Button from "react-bootstrap/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserSentences } from "../actions/usersentences";
 import { useLocation } from "react-router";
 import * as config from "../../src/config";
+import { useOpenLogin } from "../components/loginPopup";
 
 function MyPage() {
   // get states from global react redux store
@@ -19,6 +21,8 @@ function MyPage() {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const openLogin = useOpenLogin();
+  const signedIn = Object.keys(user).length !== 0;
 
   // Only things that belong to this screen are kept as state: which page is
   // open, and which sentence the mouse is over (to show its edit pencil).
@@ -26,9 +30,10 @@ function MyPage() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const itemsPerPage = config.SentencesPerPageForMyPage;
 
+  // The signed-in student's sentences (nobody's signed in: nothing to fetch)
   useEffect(() => {
-    dispatch(getUserSentences());
-  }, [dispatch, location]);
+    if (signedIn) dispatch(getUserSentences());
+  }, [dispatch, location, signedIn]);
 
   // Everything below is worked out from the store each time this draws, so
   // it can never be out of date.
@@ -42,7 +47,7 @@ function MyPage() {
     .reverse()
     .slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
-  if (Object.keys(user)?.length !== 0) {
+  if (signedIn) {
     // if there is a login user, display their own sentences
     return (
       <div className="contentmypage">
@@ -122,5 +127,19 @@ function MyPage() {
       </div>
     );
   }
+
+  // Nobody's signed in (e.g. an old bookmark, or the login ran out): say so,
+  // with a way to sign in, instead of an empty page. Signing in then opens
+  // this page.
+  return (
+    <div className="contentmypage">
+      <div className="page-message">
+        <p>Sign in to write your own sentences and see them here.</p>
+        <Button variant="primary" onClick={openLogin}>
+          Sign in
+        </Button>
+      </div>
+    </div>
+  );
 }
 export default MyPage;

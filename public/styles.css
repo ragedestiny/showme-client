@@ -272,9 +272,10 @@ body {
   min-height: 87vh;
 }
 
-/* "Couldn't load, try again" and "nothing approved yet" on the collection
-   page: a light box, readable on the patterned background */
-.collection-message {
+/* A short message instead of a page's usual content, in a light box that's
+   readable on the patterned background: "couldn't load, try again" and
+   "nothing approved yet" on the collection page, "sign in" on MyPage */
+.page-message {
   max-width: 34rem;
   margin: 3rem auto;
   padding: 1.5rem;
