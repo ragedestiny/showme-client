@@ -1,22 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/esm/Container";
 
 function CarouselComp(props) {
+  // The first slide's photo is the main thing on the home page, so it
+  // downloads on its own: the hidden slides' photos wait until it has arrived
+  // (or failed) instead of sharing the connection with it. The slides only
+  // start turning then, so the next photo still has the usual 5 seconds to
+  // arrive. A visitor who changes slide gets every photo straight away.
+  const [firstPhotoDone, setFirstPhotoDone] = useState(false);
+  const loadTheRest = () => setFirstPhotoDone(true);
+
   // Carousel in front page
   return (
     <Container fluid>
-      <Carousel className="carousel" variant="dark">
+      <Carousel
+        className="carousel"
+        variant="dark"
+        interval={firstPhotoDone ? 5000 : null}
+        onSelect={loadTheRest}
+      >
         {props.sliderdata.map((entry, index) => {
+          const first = index === 0;
           return (
             <Carousel.Item key={index}>
               <img
                 className="d-block w-100 carousel-image"
-                src={entry.picture}
+                src={first || firstPhotoDone ? entry.picture : undefined}
                 alt={index + 1}
-                // The first slide is the main thing on the home page, so the
-                // browser fetches it first; the hidden slides come after
-                fetchPriority={index === 0 ? "high" : "low"}
+                fetchPriority={first ? "high" : "low"}
+                onLoad={first ? loadTheRest : undefined}
+                onError={first ? loadTheRest : undefined}
               />
               <Carousel.Caption>
                 <h4>{entry.tell}</h4>
