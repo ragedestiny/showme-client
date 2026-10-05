@@ -14,6 +14,9 @@ function CarouselComp(props) {
                 className="d-block w-100 carousel-image"
                 src={entry.picture}
                 alt={index + 1}
+                // The first slide is the main thing on the home page, so the
+                // browser fetches it first; the hidden slides come after
+                fetchPriority={index === 0 ? "high" : "low"}
               />
               <Carousel.Caption>
                 <h4>{entry.tell}</h4>
