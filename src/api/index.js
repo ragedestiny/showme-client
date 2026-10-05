@@ -29,5 +29,26 @@ export const fetchApprovalSentences = () => API.get("/Admin");
 export const updatePendingApprovalSentences = (status, sentence) =>
   API.patch("/Admin", { status, sentence });
 
-// retrieve approved sentences
-export const fetchApprovedSentences = () => API.get("/Collections");
+// On a fresh load of some pages, index.html starts a request before the app's
+// code has even downloaded (see vite.config.js). Each one is handed over once:
+// coming back to the page later asks the server again, for a fresh answer.
+const takeEarlyRequest = (path) => {
+  const early = window.earlyRequests?.[path];
+  if (early) delete window.earlyRequests[path];
+  return early;
+};
+
+// retrieve approved sentences: index.html may have asked already. If that
+// didn't work, ask again the usual way, which reports failures as usual.
+export const fetchApprovedSentences = async () => {
+  const early = takeEarlyRequest("/Collections");
+  if (early) {
+    try {
+      const response = await early;
+      if (response.ok) return { data: await response.json() };
+    } catch {
+      // no answer (e.g. offline): ask again below
+    }
+  }
+  return API.get("/Collections");
+};

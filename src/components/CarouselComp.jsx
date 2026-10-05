@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import Container from "react-bootstrap/esm/Container";
+import { phoneCarouselMedia } from "../config";
 
 function CarouselComp(props) {
   // The first slide's photo is the main thing on the home page, so it
@@ -8,6 +9,8 @@ function CarouselComp(props) {
   // (or failed) instead of sharing the connection with it. The slides only
   // start turning then, so the next photo still has the usual 5 seconds to
   // arrive. A visitor who changes slide gets every photo straight away.
+  // Phones held upright download the phone-shaped copy instead (<source>),
+  // which index.html has usually started downloading already (vite.config.js).
   const [firstPhotoDone, setFirstPhotoDone] = useState(false);
   const loadTheRest = () => setFirstPhotoDone(true);
 
@@ -22,16 +25,23 @@ function CarouselComp(props) {
       >
         {props.sliderdata.map((entry, index) => {
           const first = index === 0;
+          const download = first || firstPhotoDone;
           return (
             <Carousel.Item key={index}>
-              <img
-                className="d-block w-100 carousel-image"
-                src={first || firstPhotoDone ? entry.picture : undefined}
-                alt={index + 1}
-                fetchPriority={first ? "high" : "low"}
-                onLoad={first ? loadTheRest : undefined}
-                onError={first ? loadTheRest : undefined}
-              />
+              <picture className="d-block">
+                <source
+                  media={phoneCarouselMedia}
+                  srcSet={download ? entry.phonePicture : undefined}
+                />
+                <img
+                  className="d-block w-100 carousel-image"
+                  src={download ? entry.picture : undefined}
+                  alt={index + 1}
+                  fetchPriority={first ? "high" : "low"}
+                  onLoad={first ? loadTheRest : undefined}
+                  onError={first ? loadTheRest : undefined}
+                />
+              </picture>
               <Carousel.Caption>
                 <h4>{entry.tell}</h4>
                 <p className="subtext">Vs.</p>
