@@ -2,10 +2,10 @@ import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Spinner from "react-bootstrap/Spinner";
 import { Routes, Route, Link, useLocation } from "react-router";
 import Home from "../pages/Home";
 import PageErrorBoundary from "./PageErrorBoundary";
+import PageLoading from "./PageLoading";
 import { useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import useAuthService from "../service/authService";
@@ -37,13 +37,6 @@ const whenIdle = (callback) =>
   window.requestIdleCallback
     ? window.requestIdleCallback(callback, { timeout: 3000 })
     : setTimeout(callback, 1000); // Safari has no requestIdleCallback
-
-// Shown for the moment a page's code is still downloading
-const PageLoading = () => (
-  <div className="d-flex justify-content-center my-5">
-    <Spinner animation="border" role="status" aria-label="Loading page" />
-  </div>
-);
 
 function NavbarComp() {
   // get user from global react redux store
