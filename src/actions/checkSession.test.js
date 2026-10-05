@@ -23,15 +23,35 @@ afterEach(() => {
   API.interceptors.response.eject(interceptorId);
 });
 
-describe("checking a remembered login when the app opens", () => {
+describe("checking the login when the app opens", () => {
   const ada = { firstName: "Ada", email: "ada@example.com" };
 
-  it("asks nothing when nobody is remembered", async () => {
-    const store = startApp({ remembered: {}, respond: () => 200 });
+  // The httpOnly login cookie is the source of truth, not what the browser
+  // remembers: a valid cookie with nothing remembered (storage cleared, or a
+  // test robot's login) still means "logged in".
+  it("shows the user from a valid login cookie even when nobody is remembered", async () => {
+    const store = startApp({
+      remembered: {},
+      respond: (config) => {
+        expect(config.url).toBe("/Login");
+        return { status: 200, data: ada };
+      },
+    });
 
     await store.dispatch(checkSession());
 
-    expect(API.defaults.adapter).not.toHaveBeenCalled();
+    expect(store.getState().user).toEqual(ada);
+  });
+
+  it("stays logged out, quietly, when nobody is remembered and there is no login (401)", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const store = startApp({ remembered: {}, respond: () => 401 });
+
+    await store.dispatch(checkSession());
+
+    expect(store.getState().user).toEqual({});
+    expect(consoleError).not.toHaveBeenCalled(); // a visitor is not an error
+    consoleError.mockRestore();
   });
 
   it("keeps the user, with fresh details, when the login is still valid", async () => {

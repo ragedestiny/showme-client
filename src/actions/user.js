@@ -6,17 +6,19 @@ export const fetchUser = () => async (dispatch) => {
     const { data } = await api.fetchUser();
     dispatch({ type: "FIND_USER", payload: data });
   } catch (error) {
-    console.error(error.message);
+    // 401 just means "nobody is logged in", which is normal for visitors
+    if (error.response?.status !== 401) console.error(error.message);
   }
 };
 
-// When the app opens, redux-persist restores the last user from the browser's
-// storage. That's only a memory of a login, not proof. If we remember someone,
-// ask the server whether the login is still valid: a 401 makes the interceptor
-// log out; no answer (offline) leaves things as they are.
-export const checkSession = () => async (dispatch, getState) => {
-  const rememberedUser = getState().user;
-  if (Object.keys(rememberedUser).length === 0) return;
+// When the app opens, ask the server who is logged in. The httpOnly login
+// cookie is the proof; what redux-persist restored from the browser's storage
+// is only a memory of a login. So:
+//   - valid cookie: show that user (even if nothing was remembered, e.g. the
+//     storage was cleared, or a test robot logged in through the test door)
+//   - no or expired cookie (401): the interceptor logs out
+//   - no answer (offline): leave things as they are
+export const checkSession = () => async (dispatch) => {
   await dispatch(fetchUser());
 };
 
