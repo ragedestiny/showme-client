@@ -1,4 +1,6 @@
 // home page display - static doesn't change
+// picture: the photo; phonePicture: its middle, for phones held upright (see
+// phoneCarouselMedia in config.js). Replacing a photo? Replace both.
 
 const tell = [
   {
@@ -7,6 +9,7 @@ const tell = [
     tell: "It is cold outside.",
     show: "As I walked out the door, the frigid air hit my face and instantly the sweat on my forehead crystalized.",
     picture: "/images/winter.jpg",
+    phonePicture: "/images/winter-phone.jpg",
   },
   {
     key: 2,
@@ -14,6 +17,7 @@ const tell = [
     tell: "It is hot outside.",
     show: "The blazing heat scorches the parched lands eliminating the last bit of moisture trying to escape.",
     picture: "/images/summer.jpg",
+    phonePicture: "/images/summer-phone.jpg",
   },
   {
     key: 3,
@@ -21,6 +25,7 @@ const tell = [
     tell: "His room is messy.",
     show: "There are dirty clothes all over the filthy floor and a foul smell from the leftover rotting food envelopes his flat.",
     picture: "/images/messy.jpg",
+    phonePicture: "/images/messy-phone.jpg",
   },
   {
     key: 4,
@@ -28,6 +33,7 @@ const tell = [
     tell: "Her room is clean.",
     show: "Even with a magnifying glass, you won't be able to see a minute speck of dust in her spotless apartment.",
     picture: "/images/clean.jpg",
+    phonePicture: "/images/clean-phone.jpg",
   },
 ];
 

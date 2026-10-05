@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Collection from "./Collection";
@@ -41,12 +41,28 @@ const pickSort = async (user, choice) => {
   await user.click(within(await screen.findByRole("menu")).getByText(choice));
 };
 
+afterEach(() => {
+  delete window.earlyRequests;
+});
+
 describe("Collection", () => {
   it("shows the approved sentences from the server", async () => {
     renderCollection({ server: fromServer(6) });
 
     await waitFor(() => expect(shownOrder()).toHaveLength(6));
     expect(shownOrder().sort()).toEqual(fromServer(6).map((s) => s.show).sort());
+  });
+
+  it("shows the sentences index.html already asked for, without asking again", async () => {
+    // On a fresh load, index.html starts this request before the app's code
+    // arrives (see vite.config.js). The app's own request would fail here.
+    window.earlyRequests = {
+      "/Collections": Promise.resolve({ ok: true, status: 200, json: async () => fromServer(4) }),
+    };
+    renderCollection({ server: () => "offline" });
+
+    await waitFor(() => expect(shownOrder()).toHaveLength(4));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
   it("shows the fresh list from the server, not an old one remembered by the browser", async () => {
