@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import Button from "@mui/material/Button";
 import Cards from "../components/Cards";
 import FadeMenu from "../components/FadeMenu";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -13,33 +14,47 @@ const shuffle = (sentences) =>
     .map(({ sentence }) => sentence);
 
 function Collection() {
-  // get approved sentences from redux global state
-  const approvedSentences = useSelector((state) => state.approvedsentences);
   const dispatch = useDispatch();
 
-  // The order chosen for display (random by default), and whether we're still
-  // waiting for the server's list
+  // The server's list (newest first), the order chosen for display (random by
+  // default), whether we're still waiting for the server, and whether the
+  // last request failed. Bumping `attempt` asks the server again.
+  const [sentences, setSentences] = useState([]);
   const [displaySentences, setDisplay] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
-  // Ask the server for the approved sentences once, and shuffle them as soon
-  // as they arrive. (Using the answer directly means an old list the browser
-  // may have remembered is never shown.)
+  // Ask the server for the approved sentences, and shuffle them as soon as
+  // they arrive. Only the server's answer is ever shown: an old list the
+  // browser may have remembered never is, not even by the sort menu.
   useEffect(() => {
     let stillHere = true;
-    dispatch(fetchApprovedSentences()).then((sentences) => {
+    dispatch(fetchApprovedSentences()).then((fresh) => {
       if (!stillHere) return; // the visitor already left this page
-      setDisplay(shuffle(sentences));
+      if (fresh) {
+        setSentences(fresh);
+        setDisplay(shuffle(fresh));
+      } else {
+        setFailed(true);
+      }
       setLoading(false);
     });
     return () => {
       stillHere = false;
     };
-  }, [dispatch]);
+  }, [dispatch, attempt]);
+
+  // After a failed request: show the loader again and ask once more
+  const tryAgain = () => {
+    setFailed(false);
+    setLoading(true);
+    setAttempt((n) => n + 1);
+  };
 
   // The sort menu's choices
-  const randomizeSentences = () => setDisplay(shuffle(approvedSentences));
-  const displayNewestSentences = () => setDisplay(approvedSentences);
+  const randomizeSentences = () => setDisplay(shuffle(sentences));
+  const displayNewestSentences = () => setDisplay(sentences);
 
   // collection page to display approved sentences
   return (
@@ -49,15 +64,35 @@ function Collection() {
       text="Loading..."
       className="contentcollection"
     >
-      <div className="dropdown">
-        <FadeMenu
-          newest={displayNewestSentences}
-          randomize={randomizeSentences}
-        />
-      </div>
-      <div>
-        <Cards displaySentences={displaySentences} />
-      </div>
+      {failed ? (
+        <div className="collection-message" role="alert">
+          <p>
+            We couldn&apos;t load the collection. Check your internet
+            connection, then try again.
+          </p>
+          <Button variant="contained" onClick={tryAgain}>
+            Try again
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="dropdown">
+            <FadeMenu
+              newest={displayNewestSentences}
+              randomize={randomizeSentences}
+            />
+          </div>
+          {!loading && sentences.length === 0 ? (
+            <p className="collection-message">
+              No sentences have been approved yet.
+            </p>
+          ) : (
+            <div>
+              <Cards displaySentences={displaySentences} />
+            </div>
+          )}
+        </>
+      )}
     </LoadingOverlay>
   );
 }
