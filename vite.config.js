@@ -1,7 +1,48 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { purgeCSSPlugin } from "@fullhuman/postcss-purgecss";
 import tell from "./src/tellData.js";
 import { phoneCarouselMedia } from "./src/config.js";
+
+// The style libraries (MDB, Bootstrap and Font Awesome: about 570 KB) style
+// far more than this site uses, and browsers download all of it before they
+// can draw anything. When building, keep only the rules for the classes, tags
+// and attributes this site uses: the ones written in its code, plus the ones
+// the libraries' own code adds while you use the site, which never appear in
+// our code as written (e.g. "carousel-item-next" while a slide moves).
+// Using a new react-bootstrap or MDB component, or a new variant (e.g.
+// <Button variant="success">)? Add its class names here: `npm start` keeps
+// every rule, so it looks fine there, but the built site would leave it
+// unstyled. (public/styles.css is not touched.)
+const addedByLibraries = [
+  /^carousel/, /^slide$/, /^active$/, /^fade$/, /^show$/, /^showing$/, /^hiding$/,
+  /^collaps/, /^disabled$/, /^visually-hidden/, // slides, menus, pop-ups
+  /^navbar/, /^nav$/, /^nav-/, /^container/, /^row$/, /^col/, // Navbar, Nav, Container, MDBRow/MDBCol
+  /^modal/, /^tooltip/, /^bs-tooltip/, // Modal, Tooltip
+  // Only the variants our code picks (each library has dozens): Button
+  // variant="primary"/"secondary" and Modal's close button; Form.Control,
+  // Form.Label, Form.Text; a plain ListGroup and ListGroup.Item
+  /^btn$/, /^btn-(primary|secondary|close)$/, /^form-(control|label|text)$/, /^list-group(-item)?$/,
+  /^badge/, /^rounded-pill$/, /^bg-/, /^text-/, /^pagination/, /^page-/, // Badge, Pagination
+  /^spinner/, /^card/, /^table/, /^ripple/, // Spinner, MDBCard, MDBTable, MDB's click ripple
+  /^fa[srb]?$/, /^fa-(list-check|check|rotate-right|lg|width-auto|bounce)$/, // Admin's MDBIcons, the edit pencil
+];
+// Tags and attributes that only the libraries' code writes (e.g. <table>, or
+// the carousel's data-bs-target and a tooltip's data-popper-placement, with
+// its values). MDB writes a few tag names in capitals.
+const tagsAndAttributes =
+  "html body div span a p h1 h2 h3 h4 h5 h6 img picture source svg path i b strong small " +
+  "button input textarea select option label form ol ul li table thead tbody tr th td nav " +
+  "footer header main section hr INPUT SELECT TEXTAREA " +
+  "hidden type role tabindex disabled readonly multiple size list title href class " +
+  "submit reset checkbox radio data-bs-target data-bs-popper data-mdb-popper " +
+  "data-popper-placement top bottom start end left right auto";
+const removeUnusedStyles = () =>
+  purgeCSSPlugin({
+    content: ["./index.html", "./src/**/*.{js,jsx}", { raw: tagsAndAttributes, extension: "html" }],
+    skippedContentGlobs: ["**/*.test.*", "**/test/**"],
+    safelist: { standard: addedByLibraries },
+  });
 
 // Writes build/version.txt containing the git commit the site was built from.
 // Netlify provides it as COMMIT_REF. CI reads this file to know when a deploy
@@ -121,9 +162,15 @@ const preloadCurrentPage = () => ({
   },
 });
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   // JSX support and instant refresh when you save a component
   plugins: [react(), versionFile(), preloadCurrentPage()],
+
+  // Only when building the site: while developing, every rule stays, so a
+  // class you just started using works straight away
+  css: {
+    postcss: { plugins: command === "build" ? [removeUnusedStyles()] : [] },
+  },
 
   server: {
     // Google only allows its sign-in button on origins approved in Google
@@ -154,4 +201,4 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.js"],
   },
-});
+}));

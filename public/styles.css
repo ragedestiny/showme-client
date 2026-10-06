@@ -413,3 +413,20 @@ body {
 .carousel .carousel-control-next-icon::after {
   font-family: "Font Awesome 7 Free", "Font Awesome 6 Free";
 }
+
+/* The edit pencil on MyPage (EditModal.jsx) is Font Awesome's "pen-to-square"
+   icon drawn directly. These are the sizing rules Font Awesome's code used to
+   add for it; fa-lg, fa-width-auto and fa-bounce come from Font Awesome's
+   stylesheet. */
+.svg-inline--fa {
+  box-sizing: content-box;
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+  width: var(--fa-width, 1.25em);
+}
+
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.2em;
+}
