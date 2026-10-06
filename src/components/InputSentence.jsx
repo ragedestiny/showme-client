@@ -28,8 +28,9 @@ function InputSentence() {
     // prevents the page from refreshing
     event.preventDefault();
 
-    // if user didn't enter anything, disregard submit
-    if (newSentence === "") return;
+    // if user didn't enter anything (or only spaces and line breaks),
+    // disregard submit, so a blank sentence can't use up a day
+    if (newSentence.trim() === "") return;
 
     if (day > tellSentences.length) {
       // Prevent submission if there are no more tell sentences
