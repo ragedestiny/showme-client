@@ -195,6 +195,18 @@ describe("MyPage", () => {
     expect(screen.getByText("Day 3")).toBeInTheDocument();
   });
 
+  it("ignores a submission of only spaces and line breaks, so no day is used up", async () => {
+    const user = userEvent.setup();
+    const { requests } = renderMyPage();
+    await screen.findByText("Day 3");
+
+    await user.type(screen.getByRole("textbox"), "   {Enter}  ");
+    await user.click(submitButton());
+
+    expect(requests.some((r) => r.method === "post")).toBe(false);
+    expect(screen.getByText("Day 3")).toBeInTheDocument();
+  });
+
   it("shows 8 sentences per page, with page buttons when there are more", async () => {
     const user = userEvent.setup();
     renderMyPage({ mine: shows(10) });
